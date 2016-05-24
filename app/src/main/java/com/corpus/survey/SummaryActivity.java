@@ -1,5 +1,6 @@
 package com.corpus.survey;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -83,7 +84,8 @@ public class SummaryActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.new_survey) {
-            // Handle the camera action
+            Intent contentSummaryIntent = new Intent(this, SurveyActivity.class);
+            startActivity(contentSummaryIntent);
         } else if (id == R.id.admin_login) {
 
         } else if (id == R.id.action_settings) {
