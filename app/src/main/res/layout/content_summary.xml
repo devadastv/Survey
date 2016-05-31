@@ -12,4 +12,10 @@
     tools:context="com.corpus.survey.SummaryActivity"
     tools:showIn="@layout/app_bar_summary">
 
+    <TextView
+        android:id="@+id/summary_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This is a sample summary text" />
+
 </RelativeLayout>

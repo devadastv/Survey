@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SummaryActivity extends AppCompatActivity
@@ -29,9 +30,7 @@ public class SummaryActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-                Toast.makeText(SummaryActivity.this, "New Survey will be started, but yet to be implemented", Toast.LENGTH_SHORT).show();
+                startSurvey();
             }
         });
 
@@ -43,6 +42,10 @@ public class SummaryActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        TextView mSummaryText = (TextView) findViewById(R.id.summary_text);
+        String welcomeText = "Welcome <vendor_Name>! Given below a summary of survey taken on your shop";
+        mSummaryText.setText(welcomeText);
     }
 
     @Override
@@ -84,8 +87,7 @@ public class SummaryActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.new_survey) {
-            Intent contentSummaryIntent = new Intent(this, SurveyActivity.class);
-            startActivity(contentSummaryIntent);
+            startSurvey();
         } else if (id == R.id.admin_login) {
 
         } else if (id == R.id.action_settings) {
@@ -95,5 +97,11 @@ public class SummaryActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startSurvey()
+    {
+        Intent contentSummaryIntent = new Intent(this, SurveyActivity.class);
+        startActivity(contentSummaryIntent);
     }
 }

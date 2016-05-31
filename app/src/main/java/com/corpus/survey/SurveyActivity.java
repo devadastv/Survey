@@ -75,6 +75,7 @@ public class SurveyActivity extends AppCompatActivity {
             Survey survey = new Survey(surveyPersonName, mobileNumber);
             dbHelper.createSurvey(survey);
             Toast.makeText(this, "This survey is successfully submitted. Thanks!", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
