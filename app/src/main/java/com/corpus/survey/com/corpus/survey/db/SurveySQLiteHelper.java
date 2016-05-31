@@ -2,6 +2,7 @@ package com.corpus.survey.com.corpus.survey.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -60,5 +61,13 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         values.put(SURVEY_COLUMN_PHONE, survey.getPhoneNumber());
         db.insert(SURVEY_TABLE_NAME, null, values);
         db.close();
+    }
+
+    public int getNumberOfSurveyEntries()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT  * FROM " + SURVEY_TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        return cursor.getCount();
     }
 }

@@ -1,9 +1,12 @@
 package com.corpus.survey;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,8 +19,13 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.corpus.survey.com.corpus.survey.db.SurveySQLiteHelper;
+
 public class SummaryActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
+    TextView mSummaryText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +51,12 @@ public class SummaryActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        TextView mSummaryText = (TextView) findViewById(R.id.summary_text);
-        String welcomeText = "Welcome <vendor_Name>! Given below a summary of survey taken on your shop";
+        mSummaryText = (TextView) findViewById(R.id.summary_text);
+        setSummaryMessage();
+    }
+
+    private void setSummaryMessage() {
+        String welcomeText = "Welcome <vendor_Name>! Given below a summary of survey taken on your shop. Total number of surveys done so far: " + dbHelper.getNumberOfSurveyEntries();
         mSummaryText.setText(welcomeText);
     }
 
@@ -54,7 +66,20 @@ public class SummaryActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Closing App")
+                    .setMessage("Are you sure you want to close this app?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+//            super.onBackPressed();
         }
     }
 
@@ -99,9 +124,15 @@ public class SummaryActivity extends AppCompatActivity
         return true;
     }
 
-    private void startSurvey()
-    {
+    private void startSurvey() {
         Intent contentSummaryIntent = new Intent(this, SurveyActivity.class);
         startActivity(contentSummaryIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("SummaryActivity", "Inside onResume of SummaryActivity");
+        setSummaryMessage();
+        super.onResume();
     }
 }
