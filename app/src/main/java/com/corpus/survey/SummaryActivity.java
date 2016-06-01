@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.corpus.survey.com.corpus.survey.db.SurveySQLiteHelper;
 
@@ -52,10 +50,10 @@ public class SummaryActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mSummaryText = (TextView) findViewById(R.id.summary_text);
-        setSummaryMessage();
+        updateSummaryMessage();
     }
 
-    private void setSummaryMessage() {
+    private void updateSummaryMessage() {
         String welcomeText = "Welcome <vendor_Name>! Given below a summary of survey taken on your shop. Total number of surveys done so far: " + dbHelper.getNumberOfSurveyEntries();
         mSummaryText.setText(welcomeText);
     }
@@ -66,7 +64,6 @@ public class SummaryActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-
             new AlertDialog.Builder(this)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("Closing App")
@@ -115,6 +112,19 @@ public class SummaryActivity extends AppCompatActivity
             startSurvey();
         } else if (id == R.id.admin_login) {
 
+        } else if (id == R.id.clear_surveys) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Warning: Clearing all Surveys")
+                    .setMessage("Are you sure you want to delete all survey entries created so far? This action can not be undone!")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearAllSurveys();
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         } else if (id == R.id.action_settings) {
 
         }
@@ -122,6 +132,11 @@ public class SummaryActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void clearAllSurveys() {
+        dbHelper.deleteAllSurveyEntries();
+        updateSummaryMessage();
     }
 
     private void startSurvey() {
@@ -132,7 +147,7 @@ public class SummaryActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         Log.d("SummaryActivity", "Inside onResume of SummaryActivity");
-        setSummaryMessage();
+        updateSummaryMessage();
         super.onResume();
     }
 }

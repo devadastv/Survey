@@ -70,4 +70,10 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         return cursor.getCount();
     }
+
+    public void deleteAllSurveyEntries()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ SURVEY_TABLE_NAME);
+    }
 }

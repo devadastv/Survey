@@ -22,6 +22,10 @@
                 android:id="@+id/admin_login"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Admin Login" />
+            <item
+                android:id="@+id/clear_surveys"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Clear All Surveys" />
             <!--<item-->
                 <!--android:id="@+id/action_settings"-->
                 <!--android:icon="@drawable/ic_menu_manage"-->
