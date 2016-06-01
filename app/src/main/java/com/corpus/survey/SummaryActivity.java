@@ -105,26 +105,16 @@ public class SummaryActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.new_survey) {
             startSurvey();
         } else if (id == R.id.admin_login) {
 
+        } else if (id == R.id.survey_list) {
+
         } else if (id == R.id.clear_surveys) {
-            new AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Warning: Clearing all Surveys")
-                    .setMessage("Are you sure you want to delete all survey entries created so far? This action can not be undone!")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            clearAllSurveys();
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
+            displayClearSurveyConfirmationDialog();
         } else if (id == R.id.action_settings) {
 
         }
@@ -134,14 +124,25 @@ public class SummaryActivity extends AppCompatActivity
         return true;
     }
 
-    private void clearAllSurveys() {
-        dbHelper.deleteAllSurveyEntries();
-        updateSummaryMessage();
-    }
-
     private void startSurvey() {
         Intent contentSummaryIntent = new Intent(this, SurveyActivity.class);
         startActivity(contentSummaryIntent);
+    }
+
+    private void displayClearSurveyConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Warning: Clearing all Surveys")
+                .setMessage("Are you sure you want to delete all survey entries created so far? This action can not be undone!")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbHelper.deleteAllSurveyEntries();
+                        updateSummaryMessage();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     @Override
