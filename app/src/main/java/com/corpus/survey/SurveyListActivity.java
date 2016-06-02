@@ -2,9 +2,12 @@ package com.corpus.survey;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.corpus.survey.com.corpus.survey.db.SurveySQLiteHelper;
 
@@ -33,12 +36,16 @@ public class SurveyListActivity extends AppCompatActivity {
         {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-    }
 
-//    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-//        String item = (String) getListAdapter().getItem(position);
-//        Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
+        mSurveyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object item = ((SimpleCursorAdapter) parent.getAdapter()).getItem(position);
+                Log.d("SurveyList", "Object at position " + position + " is " + item);
+                //getItem(position);
+                Toast.makeText(SurveyListActivity.this, item + " selected", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
 
