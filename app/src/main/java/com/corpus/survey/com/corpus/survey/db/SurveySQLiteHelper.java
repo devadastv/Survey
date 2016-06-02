@@ -14,11 +14,11 @@ import com.corpus.survey.Survey;
 public class SurveySQLiteHelper extends SQLiteOpenHelper {
 
     private static final int database_VERSION = 1;
-    private static final String DATABASE_NAME = "SurveyDB";
-    private static final String SURVEY_TABLE_NAME = "survey";
-    private static final String SURVEY_COLUMN_ID = "id";
-    private static final String SURVEY_COLUMN_NAME = "name";
-    private static final String SURVEY_COLUMN_PHONE = "phone";
+    public static final String DATABASE_NAME = "SurveyDB";
+    public static final String SURVEY_TABLE_NAME = "survey";
+    public static final String SURVEY_COLUMN_ID = "_id";
+    public static final String SURVEY_COLUMN_NAME = "name";
+    public static final String SURVEY_COLUMN_PHONE = "phone";
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
@@ -74,6 +74,12 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
     public void deleteAllSurveyEntries()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from "+ SURVEY_TABLE_NAME);
+//        db.execSQL("delete from "+ SURVEY_TABLE_NAME);
+        db.execSQL(SQL_DELETE_ENTRIES);
+    }
+
+    public Cursor getAllSurveyList(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.query(SURVEY_TABLE_NAME, null, null, null, null, null, null);
     }
 }

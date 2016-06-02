@@ -23,6 +23,10 @@
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Admin Login" />
             <item
+                android:id="@+id/survey_list"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Survey List" />
+            <item
                 android:id="@+id/clear_surveys"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Clear All Surveys" />

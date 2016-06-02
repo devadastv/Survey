@@ -112,7 +112,7 @@ public class SummaryActivity extends AppCompatActivity
         } else if (id == R.id.admin_login) {
 
         } else if (id == R.id.survey_list) {
-
+            launchSurveyList();
         } else if (id == R.id.clear_surveys) {
             displayClearSurveyConfirmationDialog();
         } else if (id == R.id.action_settings) {
@@ -122,6 +122,11 @@ public class SummaryActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void launchSurveyList() {
+        Intent intent = new Intent(SummaryActivity.this, SurveyListActivity.class);
+        startActivity(intent);
     }
 
     private void startSurvey() {
