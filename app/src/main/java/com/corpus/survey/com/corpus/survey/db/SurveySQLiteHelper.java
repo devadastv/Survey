@@ -74,8 +74,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
     public void deleteAllSurveyEntries()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-//        db.execSQL("delete from "+ SURVEY_TABLE_NAME);
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL("delete from "+ SURVEY_TABLE_NAME);
     }
 
     public Cursor getAllSurveyList(){

@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,7 @@ public class SurveyActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mSurveyPersonName = (EditText) findViewById(R.id.survey_person_name);
+        mSurveyPersonName.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mMobileNumber = (EditText) findViewById(R.id.mobile_number);
 
         Button clickButton = (Button) findViewById(R.id.submit);
