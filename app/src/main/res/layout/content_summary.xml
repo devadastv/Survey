@@ -16,6 +16,7 @@
         android:id="@+id/summary_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="22sp"
         android:text="This is a sample summary text" />
 
 </RelativeLayout>

@@ -54,6 +54,13 @@ public class SurveyDetailsActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        Bundle extras = getIntent().getExtras();
+        int surveyItemIndex = 0;
+        if (extras != null) {
+            surveyItemIndex = extras.getInt(SurveyListActivity.SURVEY_ITEM_INDEX);
+        }
+        mViewPager.setCurrentItem(surveyItemIndex);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -122,9 +129,10 @@ public class SurveyDetailsActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_survey_details, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-//            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            textView.setText(getArguments().getString(ARG_SURVEY_USER_NAME));
+            TextView mUserName = (TextView) rootView.findViewById(R.id.user_name);
+            TextView mPhoneNumber = (TextView) rootView.findViewById(R.id.phone_number);
+            mUserName.setText(getArguments().getString(ARG_SURVEY_USER_NAME));
+            mPhoneNumber.setText(getArguments().getString(ARG_SURVEY_USER_NUMBER));
             return rootView;
         }
     }

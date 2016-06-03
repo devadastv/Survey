@@ -16,6 +16,8 @@ public class SurveyListActivity extends AppCompatActivity {
 
     SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
 
+    public static final String SURVEY_ITEM_INDEX = "survey_item_index";
+
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
 
@@ -41,11 +43,10 @@ public class SurveyListActivity extends AppCompatActivity {
         mSurveyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Object item = ((SimpleCursorAdapter) parent.getAdapter()).getItem(position);
-                Log.d("SurveyList", "Object at position " + position + " is " + item);
-                Toast.makeText(SurveyListActivity.this, item + " selected", Toast.LENGTH_LONG).show();
-
                 Intent contentDetailsIntent = new Intent(SurveyListActivity.this, SurveyDetailsActivity.class);
+                Bundle extras = new Bundle();
+                extras.putInt(SURVEY_ITEM_INDEX, position);
+                contentDetailsIntent.putExtras(extras);
                 startActivity(contentDetailsIntent);
             }
         });
