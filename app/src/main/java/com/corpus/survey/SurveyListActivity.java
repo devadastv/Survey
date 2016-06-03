@@ -1,5 +1,6 @@
 package com.corpus.survey;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -42,8 +43,10 @@ public class SurveyListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Object item = ((SimpleCursorAdapter) parent.getAdapter()).getItem(position);
                 Log.d("SurveyList", "Object at position " + position + " is " + item);
-                //getItem(position);
                 Toast.makeText(SurveyListActivity.this, item + " selected", Toast.LENGTH_LONG).show();
+
+                Intent contentDetailsIntent = new Intent(SurveyListActivity.this, SurveyDetailsActivity.class);
+                startActivity(contentDetailsIntent);
             }
         });
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.corpus.survey.Survey;
 
@@ -19,6 +20,10 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
     public static final String SURVEY_COLUMN_ID = "_id";
     public static final String SURVEY_COLUMN_NAME = "name";
     public static final String SURVEY_COLUMN_PHONE = "phone";
+
+    public static final int SURVEY_COLUMN_ID_INDEX = 0;
+    public static final int SURVEY_COLUMN_NAME_INDEX = 1;
+    public static final int SURVEY_COLUMN_PHONE_INDEX = 2;
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
@@ -80,5 +85,18 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
     public Cursor getAllSurveyList(){
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(SURVEY_TABLE_NAME, null, null, null, null, null, null);
+    }
+
+    public Survey getSurvey(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(SURVEY_TABLE_NAME, null, " _id = ?", new String[] { String.valueOf(id) }, null, null, null, null);
+        Log.d("DBHelper", "getSurvey with id = " + id + " returned a cursor with length = " + cursor.getCount());
+        if (cursor != null)
+        {
+            cursor.moveToFirst();
+            Survey survey = new Survey(cursor.getString(SURVEY_COLUMN_NAME_INDEX), cursor.getString(SURVEY_COLUMN_PHONE_INDEX));
+            return survey;
+        }
+        return null;
     }
 }
