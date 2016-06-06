@@ -25,51 +25,52 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/sms_compose_form"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <AutoCompleteTextView
-                android:id="@+id/numbers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter mobile numbers"
-                android:inputType="numberSigned"
-                android:maxLines="1"
-                android:singleLine="true" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/sms_text"
-                android:layout_width="match_parent"
-                android:layout_height="150sp"
-                android:hint="Type your sms here"
-                android:inputType="textMultiLine"
-                android:maxLines="7"
-                android:singleLine="false" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <Button
-            android:id="@+id/send_sms_button"
-            style="?android:textAppearanceSmall"
+        <LinearLayout
+            android:id="@+id/sms_compose_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Send SMS"
-            android:textStyle="bold" />
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/numbers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter mobile numbers"
+                    android:inputType="numberSigned"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/sms_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="150sp"
+                    android:hint="Type your sms here"
+                    android:inputType="textMultiLine"
+                    android:maxLines="7"
+                    android:singleLine="false">
+                    <requestFocus />
+                </EditText>
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/send_sms_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Send SMS"
+                android:textStyle="bold" />
+
+        </LinearLayout>
     </ScrollView>
 </RelativeLayout>

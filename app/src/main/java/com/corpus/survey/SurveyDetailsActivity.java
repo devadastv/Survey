@@ -35,6 +35,8 @@ public class SurveyDetailsActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    private String targetMobileNumber;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -70,10 +72,12 @@ public class SurveyDetailsActivity extends AppCompatActivity {
                 Snackbar.make(view, "TODO: SMS compose screen should be launched now", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 Intent sendSMSIntent = new Intent(SurveyDetailsActivity.this, SendSMSActivity.class);
+                Bundle extras = new Bundle();
+                extras.putString(SendSMSActivity.SEND_SMS_SINGLE_TARGET, targetMobileNumber);
+                sendSMSIntent.putExtras(extras);
                 startActivity(sendSMSIntent);
             }
         });
-
     }
 
 
@@ -154,7 +158,9 @@ public class SurveyDetailsActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position, dbHelper.getSurvey(position + 1));
+            Survey currentSurvey = dbHelper.getSurvey(position + 1);
+            SurveyDetailsActivity.this.targetMobileNumber = currentSurvey.getPhoneNumber();
+            return PlaceholderFragment.newInstance(position, currentSurvey);
         }
 
         @Override
