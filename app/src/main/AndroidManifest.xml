@@ -32,7 +32,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SurveyListActivity"
-            android:parentActivityName=".SummaryActivity">
+            android:label="@string/title_activity_survey_list"
+            android:parentActivityName=".SummaryActivity"
+            android:theme="@style/AppTheme.NoActionBar">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
@@ -46,7 +48,7 @@
         <activity
             android:name=".SendSMSActivity"
             android:label="@string/title_activity_send_sms"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
