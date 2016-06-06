@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,6 +26,12 @@ public class SendSMSActivity extends AppCompatActivity {
         String targetMobileNumber = "";
         if (extras != null) {
             targetMobileNumber = extras.getString(SEND_SMS_SINGLE_TARGET);
+            Log.d("SendSMS", "targetMobileNumber from SEND_SMS_SINGLE_TARGET = " + targetMobileNumber);
+            if (null == targetMobileNumber)
+            {
+                targetMobileNumber = extras.getString(SEND_SMS_MULTIPLE_TARGETS);
+                Log.d("SendSMS", "targetMobileNumber from SEND_SMS_MULTIPLE_TARGETS = " + targetMobileNumber);
+            }
         }
 
         EditText mTagetNumbers = (EditText) findViewById(R.id.numbers);
