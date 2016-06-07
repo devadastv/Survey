@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,8 +35,6 @@ public class SurveyDetailsActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    private String targetMobileNumber;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -64,7 +63,6 @@ public class SurveyDetailsActivity extends AppCompatActivity {
         }
         mViewPager.setCurrentItem(surveyItemIndex);
 
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +71,8 @@ public class SurveyDetailsActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
                 Intent sendSMSIntent = new Intent(SurveyDetailsActivity.this, SendSMSActivity.class);
                 Bundle extras = new Bundle();
-                extras.putString(SendSMSActivity.SEND_SMS_SINGLE_TARGET, targetMobileNumber);
+                Survey currentSurvey = dbHelper.getSurvey(mViewPager.getCurrentItem() + 1);
+                extras.putString(SendSMSActivity.SEND_SMS_SINGLE_TARGET, currentSurvey.getPhoneNumber());
                 sendSMSIntent.putExtras(extras);
                 startActivity(sendSMSIntent);
             }
@@ -159,7 +158,6 @@ public class SurveyDetailsActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             Survey currentSurvey = dbHelper.getSurvey(position + 1);
-            SurveyDetailsActivity.this.targetMobileNumber = currentSurvey.getPhoneNumber();
             return PlaceholderFragment.newInstance(position, currentSurvey);
         }
 
