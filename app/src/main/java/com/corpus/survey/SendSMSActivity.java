@@ -27,11 +27,13 @@ public class SendSMSActivity extends AppCompatActivity {
     private int mMessageSentParts;
     private int mMessageSentTotalParts;
     private int mMessageSentCount;
-    String message;
-    String[] numbers;
+    private String message;
+    private String[] numbers;
 
-    String SENT = "SMS_SENT";
-    String DELIVERED = "SMS_DELIVERED";
+    private final String SENT = "SMS_SENT";
+    private final String DELIVERED = "SMS_DELIVERED";
+    private boolean isReceiversRegistered;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class SendSMSActivity extends AppCompatActivity {
 
         mTagetNumbers = (EditText) findViewById(R.id.numbers);
         mTagetNumbers.setText(targetMobileNumber);
+        unregisterBroadcastReceivers();
         Button mSendSMSButton = (Button) findViewById(R.id.send_sms_button);
         mSendSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +64,6 @@ public class SendSMSActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void startSendMessages() {
         String text = mTagetNumbers.getText().toString();
@@ -223,14 +225,24 @@ public class SendSMSActivity extends AppCompatActivity {
     };
 
     private void registerBroadCastReceivers() {
-        registerReceiver(smsSentReceiver, new IntentFilter(SENT));
-        registerReceiver(smsDeliveredReceiver, new IntentFilter(DELIVERED));
+        if (!isReceiversRegistered) {
+            registerReceiver(smsSentReceiver, new IntentFilter(SENT));
+            registerReceiver(smsDeliveredReceiver, new IntentFilter(DELIVERED));
+            isReceiversRegistered = true;
+        }
+    }
+
+    private void unregisterBroadcastReceivers() {
+        if (isReceiversRegistered) {
+            unregisterReceiver(smsSentReceiver);
+            unregisterReceiver(smsDeliveredReceiver);
+            isReceiversRegistered = false;
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(smsSentReceiver);
-        unregisterReceiver(smsDeliveredReceiver);
+        unregisterBroadcastReceivers();
     }
 }
