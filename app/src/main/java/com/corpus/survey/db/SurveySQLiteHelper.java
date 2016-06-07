@@ -1,4 +1,4 @@
-package com.corpus.survey.com.corpus.survey.db;
+package com.corpus.survey.db;
 
 import android.content.ContentValues;
 import android.content.Context;

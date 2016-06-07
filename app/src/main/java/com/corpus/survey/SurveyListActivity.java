@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.corpus.survey.com.corpus.survey.db.SurveySQLiteHelper;
+import com.corpus.survey.db.SurveySQLiteHelper;
 
 public class SurveyListActivity extends AppCompatActivity {
 

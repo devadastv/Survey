@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.corpus.survey.com.corpus.survey.db.SurveySQLiteHelper;
+import com.corpus.survey.db.SurveySQLiteHelper;
 
 public class SurveyDetailsActivity extends AppCompatActivity {
 

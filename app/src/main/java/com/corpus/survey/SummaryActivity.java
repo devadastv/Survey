@@ -17,16 +17,17 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.corpus.survey.com.corpus.survey.db.SurveySQLiteHelper;
+import com.corpus.survey.db.SurveySQLiteHelper;
+import com.corpus.survey.usermanagement.UserProfileManager;
 
 public class SummaryActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
-    private TextView mSummaryText;
     private boolean doubleBackToExitPressedOnce = false;
     NavigationView navigationView;
 
@@ -55,13 +56,25 @@ public class SummaryActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mSummaryText = (TextView) findViewById(R.id.summary_text);
         updateSummaryMessage();
+        updateUserInfoInNavigationView();
     }
 
     private void updateSummaryMessage() {
         String welcomeText = "Welcome <vendor_Name>! Given below a summary of survey taken on your shop. Total number of surveys done so far: " + dbHelper.getNumberOfSurveyEntries();
+        TextView mSummaryText = (TextView) findViewById(R.id.summary_text);
         mSummaryText.setText(welcomeText);
+    }
+
+    private void updateUserInfoInNavigationView() {
+        ImageView mUserImage = (ImageView) findViewById(R.id.profile_user_image);
+        mUserImage.setImageResource(UserProfileManager.getInstance().getUserImageId());
+
+        TextView mUserName = (TextView) findViewById(R.id.profile_user_name);
+        mUserName.setText(UserProfileManager.getInstance().getUserName());
+
+        TextView mUserEmail = (TextView) findViewById(R.id.profile_user_email);
+        mUserEmail.setText(UserProfileManager.getInstance().getUserEmail());
     }
 
     @Override
@@ -83,7 +96,7 @@ public class SummaryActivity extends AppCompatActivity
 
                 @Override
                 public void run() {
-                    doubleBackToExitPressedOnce=false;
+                    doubleBackToExitPressedOnce = false;
                 }
             }, 2000);
         }
@@ -131,15 +144,12 @@ public class SummaryActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String entry = input.getText().toString();
-                if (entry.equals(LoginActivity.ADMIN_PASSWORD))
-                {
+                if (entry.equals(LoginActivity.ADMIN_PASSWORD)) {
                     Toast.makeText(SummaryActivity.this, "Granted Admin Access!", Toast.LENGTH_SHORT).show();
                     navigationView.getMenu().findItem(R.id.admin_login).setVisible(false);
                     navigationView.getMenu().findItem(R.id.admin_logout).setVisible(true);
                     navigationView.getMenu().setGroupVisible(R.id.admin_user_menu_group, true);
-                }
-                else
-                {
+                } else {
                     Toast.makeText(SummaryActivity.this, "Incorrect password. Try again", Toast.LENGTH_LONG).show();
                 }
             }
