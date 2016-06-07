@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ public class SummaryActivity extends AppCompatActivity
     private SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
     private TextView mSummaryText;
     private boolean doubleBackToExitPressedOnce = false;
+    NavigationView navigationView;
 
 
     @Override
@@ -50,7 +53,7 @@ public class SummaryActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         mSummaryText = (TextView) findViewById(R.id.summary_text);
@@ -87,28 +90,6 @@ public class SummaryActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.summary, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -117,7 +98,9 @@ public class SummaryActivity extends AppCompatActivity
         if (id == R.id.new_survey) {
             startSurvey();
         } else if (id == R.id.admin_login) {
-
+            displayAdminPasswordEntry();
+        } else if (id == R.id.admin_logout) {
+            hideAdminMenuItems();
         } else if (id == R.id.survey_list) {
             launchSurveyList();
         } else if (id == R.id.clear_surveys) {
@@ -129,6 +112,46 @@ public class SummaryActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void hideAdminMenuItems() {
+        navigationView.getMenu().findItem(R.id.admin_login).setVisible(true);
+        navigationView.getMenu().findItem(R.id.admin_logout).setVisible(false);
+        navigationView.getMenu().setGroupVisible(R.id.admin_user_menu_group, false);
+        Toast.makeText(SummaryActivity.this, "Admin successfully logged out", Toast.LENGTH_SHORT).show();
+    }
+
+    private void displayAdminPasswordEntry() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Admin Password");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setPadding(50, 20, 50, 20);
+        builder.setView(input);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String entry = input.getText().toString();
+                if (entry.equals(LoginActivity.ADMIN_PASSWORD))
+                {
+                    Toast.makeText(SummaryActivity.this, "Granted Admin Access!", Toast.LENGTH_SHORT).show();
+                    navigationView.getMenu().findItem(R.id.admin_login).setVisible(false);
+                    navigationView.getMenu().findItem(R.id.admin_logout).setVisible(true);
+                    navigationView.getMenu().setGroupVisible(R.id.admin_user_menu_group, true);
+                }
+                else
+                {
+                    Toast.makeText(SummaryActivity.this, "Incorrect password. Try again", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
     }
 
     private void launchSurveyList() {

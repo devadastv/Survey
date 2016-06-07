@@ -1,48 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/normal_user_menu_group"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/new_survey"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/new_survey" />
-        <!--<item-->
-            <!--android:id="@+id/nav_slideshow"-->
-            <!--android:icon="@drawable/ic_menu_slideshow"-->
-            <!--android:title="Slideshow" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_manage"-->
-            <!--android:icon="@drawable/ic_menu_manage"-->
-            <!--android:title="Tools" />-->
+        <item
+            android:id="@+id/admin_login"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Admin Login" />
+        <item
+            android:id="@+id/admin_logout"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Logout Admin"
+            android:visible="false" />
     </group>
 
-    <item android:title="Administration">
-        <menu>
-            <item
-                android:id="@+id/admin_login"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="Admin Login" />
-            <item
-                android:id="@+id/survey_list"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="Survey List" />
-            <item
-                android:id="@+id/clear_surveys"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="Clear All Surveys" />
-            <!--<item-->
-                <!--android:id="@+id/action_settings"-->
-                <!--android:icon="@drawable/ic_menu_manage"-->
-                <!--android:title="@string/action_settings" />-->
-            <item
-                android:id="@+id/help"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Help" />
-            <item
-                android:id="@+id/about"
-                android:icon="@drawable/ic_menu_send"
-                android:title="About" />
-        </menu>
-    </item>
+    <group
+        android:id="@+id/admin_user_menu_group"
+        android:checkableBehavior="single">
+        <item
+            android:title="Administration"
+            android:visible="false">
+            <menu>
+                <item
+                    android:id="@+id/survey_list"
+                    android:icon="@drawable/ic_menu_manage"
+                    android:title="Survey List" />
+                <item
+                    android:id="@+id/clear_surveys"
+                    android:icon="@drawable/ic_menu_manage"
+                    android:title="Clear All Surveys" />
+            </menu>
+        </item>
+    </group>
+
+    <group
+        android:id="@+id/help_and_about"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_settings"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/action_settings" />
+        <item
+            android:id="@+id/help"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Help" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_menu_send"
+            android:title="About" />
+    </group>
 
 </menu>
