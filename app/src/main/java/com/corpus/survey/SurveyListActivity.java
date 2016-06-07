@@ -92,12 +92,9 @@ public class SurveyListActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_sendSMS) {
             String formattedTargetMobileNumbers = getFormattedTargetMobileNumbers();
-            if (TextUtils.isEmpty(formattedTargetMobileNumbers))
-            {
+            if (TextUtils.isEmpty(formattedTargetMobileNumbers)) {
                 Toast.makeText(this, "The SMS can be sent only with a non-empty list", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
+            } else {
                 Intent sendSMSIntent = new Intent(SurveyListActivity.this, SendSMSActivity.class);
                 Bundle extras = new Bundle();
                 extras.putString(SendSMSActivity.SEND_SMS_MULTIPLE_TARGETS, formattedTargetMobileNumbers);
@@ -115,14 +112,15 @@ public class SurveyListActivity extends AppCompatActivity {
         try {
             currentFilteredSurveyCursor = getCurrentFilterCursor();
             currentFilteredSurveyCursor.moveToFirst();
-            while (currentFilteredSurveyCursor.moveToNext()) {
-                String phoneNumber = currentFilteredSurveyCursor.getString(SurveySQLiteHelper.SURVEY_COLUMN_PHONE_INDEX);
-                buffer.append(phoneNumber);
-                buffer.append(", ");
+            if (currentFilteredSurveyCursor.getCount() > 0) {
+                do {
+                    String phoneNumber = currentFilteredSurveyCursor.getString(SurveySQLiteHelper.SURVEY_COLUMN_PHONE_INDEX);
+                    buffer.append(phoneNumber);
+                    buffer.append(", ");
+                } while (currentFilteredSurveyCursor.moveToNext());
             }
         } finally {
-            if (null != currentFilteredSurveyCursor && !currentFilteredSurveyCursor.isClosed())
-            {
+            if (null != currentFilteredSurveyCursor && !currentFilteredSurveyCursor.isClosed()) {
                 currentFilteredSurveyCursor.close();
             }
         }
