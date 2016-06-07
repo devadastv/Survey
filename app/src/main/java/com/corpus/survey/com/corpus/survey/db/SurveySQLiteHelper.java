@@ -73,7 +73,9 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT  * FROM " + SURVEY_TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
-        return cursor.getCount();
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
     public void deleteAllSurveyEntries()
@@ -95,6 +97,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         {
             cursor.moveToFirst();
             Survey survey = new Survey(cursor.getString(SURVEY_COLUMN_NAME_INDEX), cursor.getString(SURVEY_COLUMN_PHONE_INDEX));
+            cursor.close();
             return survey;
         }
         return null;

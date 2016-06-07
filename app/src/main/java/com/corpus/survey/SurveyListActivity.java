@@ -28,7 +28,9 @@ public class SurveyListActivity extends AppCompatActivity {
     private int currentFilter = FILTER_ALL_SURVEYS;
 
     // This is the Adapter being used to display the list's data
-    SimpleCursorAdapter mAdapter;
+    private SimpleCursorAdapter mAdapter;
+    private Cursor currentFilteredCursor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +42,9 @@ public class SurveyListActivity extends AppCompatActivity {
         // For the cursor adapter, specify which columns go into which views
         String[] fromColumns = {SurveySQLiteHelper.SURVEY_COLUMN_NAME, SurveySQLiteHelper.SURVEY_COLUMN_PHONE};
         int[] toViews = {android.R.id.text1, android.R.id.text2}; // The TextView in simple_list_item_1
+        updateCurrentFilterCursor();
         mAdapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_2, getCurrentFilterCursor(),
+                android.R.layout.simple_list_item_2, currentFilteredCursor,
                 fromColumns, toViews, 0);
 
         mSurveyList.setAdapter(mAdapter);
@@ -63,16 +66,22 @@ public class SurveyListActivity extends AppCompatActivity {
         });
     }
 
-    private Cursor getCurrentFilterCursor() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCurrentFilterCursor();
+    }
+
+    private void updateCurrentFilterCursor() {
+
         switch (currentFilter) {
             case FILTER_ALL_SURVEYS:
-                return dbHelper.getAllSurveyList();
+                currentFilteredCursor =  dbHelper.getAllSurveyList();
             case FILTER_SURVEYS_LAST_DAY:
-                return dbHelper.getAllSurveyList(); // TODO: Implement later
+                currentFilteredCursor = dbHelper.getAllSurveyList(); // TODO: Implement later
             default:
-                return dbHelper.getAllSurveyList();
+                currentFilteredCursor = dbHelper.getAllSurveyList();
         }
-
     }
 
     @Override
@@ -110,7 +119,7 @@ public class SurveyListActivity extends AppCompatActivity {
         Cursor currentFilteredSurveyCursor = null;
         StringBuffer buffer = new StringBuffer();
         try {
-            currentFilteredSurveyCursor = getCurrentFilterCursor();
+            currentFilteredSurveyCursor = currentFilteredCursor;
             currentFilteredSurveyCursor.moveToFirst();
             if (currentFilteredSurveyCursor.getCount() > 0) {
                 do {
@@ -125,6 +134,14 @@ public class SurveyListActivity extends AppCompatActivity {
             }
         }
         return buffer.toString().trim();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != currentFilteredCursor && !currentFilteredCursor.isClosed()) {
+            currentFilteredCursor.close();
+        }
     }
 }
 
