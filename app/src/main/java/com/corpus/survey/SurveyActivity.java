@@ -72,7 +72,7 @@ public class SurveyActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            Survey survey = new Survey(surveyPersonName, mobileNumber);
+            Survey survey = new Survey(surveyPersonName, mobileNumber, System.currentTimeMillis());
             dbHelper.createSurvey(survey);
             Toast.makeText(this, "This survey is successfully submitted. Thanks!", Toast.LENGTH_SHORT).show();
             finish();

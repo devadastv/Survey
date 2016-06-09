@@ -9,30 +9,38 @@ import android.util.Log;
 
 import com.corpus.survey.Survey;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by devadas.vijayan on 5/30/16.
  */
 public class SurveySQLiteHelper extends SQLiteOpenHelper {
 
-    private static final int database_VERSION = 1;
+    private static final int database_VERSION = 2;
     public static final String DATABASE_NAME = "SurveyDB";
     public static final String SURVEY_TABLE_NAME = "survey";
     public static final String SURVEY_COLUMN_ID = "_id";
     public static final String SURVEY_COLUMN_NAME = "name";
     public static final String SURVEY_COLUMN_PHONE = "phone";
+    public static final String SURVEY_COLUMN_CREATED_DATE = "created_date";
 
     public static final int SURVEY_COLUMN_ID_INDEX = 0;
     public static final int SURVEY_COLUMN_NAME_INDEX = 1;
     public static final int SURVEY_COLUMN_PHONE_INDEX = 2;
 
     private static final String TEXT_TYPE = " TEXT";
+    private static final String INTEGER_TYPE = " INTEGER ";
     private static final String COMMA_SEP = ",";
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + SURVEY_TABLE_NAME + " (" +
-                    SURVEY_COLUMN_ID + " INTEGER PRIMARY KEY," +
+                    SURVEY_COLUMN_ID + INTEGER_TYPE + " PRIMARY KEY," +
                     SURVEY_COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
-                    SURVEY_COLUMN_PHONE + TEXT_TYPE + " )";
+                    SURVEY_COLUMN_PHONE + TEXT_TYPE + COMMA_SEP +
+                    SURVEY_COLUMN_CREATED_DATE + INTEGER_TYPE +
+                    " )";
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + SURVEY_TABLE_NAME;
 
@@ -44,14 +52,15 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d("DBHandler", "Creating DB with command \n" + SQL_CREATE_ENTRIES);
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // This database is only a cache for online data, so its upgrade policy is
-        // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_ENTRIES);
+        Log.w("DBHandler", "Upgrading database from version " + oldVersion + " to "
+                + newVersion + ", which will destroy all old data");
+        db.execSQL("DROP TABLE IF EXISTS " + SURVEY_TABLE_NAME);
         onCreate(db);
     }
 
@@ -96,7 +105,16 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         if (cursor != null)
         {
             cursor.moveToFirst();
-            Survey survey = new Survey(cursor.getString(SURVEY_COLUMN_NAME_INDEX), cursor.getString(SURVEY_COLUMN_PHONE_INDEX));
+
+            /** TODO: Finalize on when to set the date time formatting. If at the time of display,
+             * modify the cursotAdapter accordingly **/
+            long millis = cursor.getLong(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CREATED_DATE));
+            Date addedOn = new Date(millis);
+            DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+            String formattedDateString = formatter.format(addedOn);
+            Log.d("DBHelper", "Formatted time from DB = " + formattedDateString + " with original value in DB = " + millis);
+            Survey survey = new Survey(cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_PHONE)), millis);
             cursor.close();
             return survey;
         }

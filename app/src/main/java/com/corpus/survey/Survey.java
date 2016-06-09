@@ -8,12 +8,17 @@ import java.util.Date;
 public class Survey {
     private String userName;
     private String phoneNumber;
-    private Date dateOfBirth;
+    private long dateOfBirth;
+    private long createdDate;
+    private String[] categoriesInterestedIn;
+    private String place;
 
-    public Survey (String userName, String phoneNumber)
+
+    public Survey (String userName, String phoneNumber, long createdDate)
     {
         this.userName = userName;
         this.phoneNumber = phoneNumber;
+        this.createdDate = createdDate;
     }
 
     public String getUserName() {
@@ -32,11 +37,11 @@ public class Survey {
         this.phoneNumber = phoneNumber;
     }
 
-    public Date getDateOfBirth() {
+    public long getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(long dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 }
