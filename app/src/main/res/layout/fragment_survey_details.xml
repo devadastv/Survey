@@ -1,36 +1,93 @@
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
-    <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
-    <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
-    <!--android:paddingTop="@dimen/activity_vertical_margin"-->
-    <!--tools:context="com.corpus.survey.SurveyDetailsActivity$PlaceholderFragment">-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.corpus.survey.SurveyDetailsActivity$PlaceholderFragment">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <TextView
+        android:id="@+id/survey_entry_count"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:text="Survey Entry 2 of 23"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:paddingLeft="16dp" />
+
+    <LinearLayout
+        android:id="@+id/survey_details_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.corpus.survey.SurveyDetailsActivity$PlaceholderFragment">
+        android:paddingTop="@dimen/activity_vertical_margin">
+
         <TextView
             android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:textColor="#000000" />
+            android:text="UserName"
+            android:textColor="#3347ab"
+            android:textSize="26sp"
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="8594001234"
+            android:textColor="#444444"
             android:textSize="20sp"
-            android:textColor="#444444" />
-</LinearLayout>
-<!--</RelativeLayout>-->
+            android:paddingTop="10dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/date_of_birth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="30-08-1990"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:paddingTop="5dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/date_of_shopping"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="04-06-2016"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:paddingTop="5dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/interested_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Interested in:"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:paddingTop="25sp"
+            android:paddingBottom="5dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/interested_in_categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="5"
+            android:singleLine="false"
+            android:text="Category 1\nCategory 2\nCategory 3"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:gravity="center" />
+    </LinearLayout>
+</LinearLayout><!--</RelativeLayout>-->
