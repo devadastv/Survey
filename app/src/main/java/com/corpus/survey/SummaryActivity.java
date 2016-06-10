@@ -118,7 +118,8 @@ public class SummaryActivity extends AppCompatActivity
         } else if (id == R.id.clear_surveys) {
             displayClearSurveyConfirmationDialog();
         } else if (id == R.id.action_settings) {
-
+            Intent contentSummaryIntent = new Intent(this, SettingsActivity.class);
+            startActivity(contentSummaryIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
