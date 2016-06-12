@@ -25,6 +25,13 @@ import android.view.MenuItem;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
+    public static final String KEY_PREF_SMS_GATEWAY = "sms_gateway";
+    public static final String KEY_PREF_SHOP_NAME = "shop_name";
+
+    public static final String PREF_VALUE_SMS_GATEWAY_SIM = "SIM";
+    public static final String PREF_VALUE_SMS_GATEWAY_ONLINE = "ONLINE";
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -130,8 +137,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("shop_name"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            bindPreferenceSummaryToValue(findPreference(KEY_PREF_SHOP_NAME));
+            bindPreferenceSummaryToValue(findPreference(KEY_PREF_SMS_GATEWAY));
         }
 
         @Override
