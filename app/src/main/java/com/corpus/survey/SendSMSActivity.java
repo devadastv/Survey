@@ -40,11 +40,10 @@ public class SendSMSActivity extends AppCompatActivity {
     private int mMessageSentTotalParts;
     private int mMessageSentCount;
     private String message;
-    private String[] numbers;
 
     private final String SENT = "SMS_SENT";
     private final String DELIVERED = "SMS_DELIVERED";
-    private boolean isReceiversRegistered;
+
     private String smsGatewayPref;
     private ProgressDialog progressDialog;
 
@@ -69,7 +68,6 @@ public class SendSMSActivity extends AppCompatActivity {
 
         mTagetNumbers = (EditText) findViewById(R.id.numbers);
         mTagetNumbers.setText(targetMobileNumber);
-        unregisterBroadcastReceivers();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         smsGatewayPref = sharedPref.getString(SettingsActivity.KEY_PREF_SMS_GATEWAY, "");
         Log.d("SendSMS", "Current SMS gateway pref = " + smsGatewayPref);
@@ -85,16 +83,14 @@ public class SendSMSActivity extends AppCompatActivity {
 
     private void startSendMessages() {
         String text = mTagetNumbers.getText().toString();
-        numbers = text.split(",");
+        String [] numbers = text.split(",");
         trimNumbers(numbers);
         EditText mSMSText = (EditText) findViewById(R.id.sms_text);
         message = mSMSText.getText().toString();
         if (isAtLeastOneValidNumber(numbers)) {
             if (smsGatewayPref.equals(SettingsActivity.PREF_VALUE_SMS_GATEWAY_SIM)) {
-                registerBroadCastReceivers();
-                mMessageSentCount = 0;
                 Log.d("SendSMS", "About to send SMSs using SIM balance");
-                sendSMS(numbers[mMessageSentCount].toString(), message);
+                new SimSMSSendingTask(message).execute(numbers);
             } else if (smsGatewayPref.equals(SettingsActivity.PREF_VALUE_SMS_GATEWAY_ONLINE)) {
                 Log.d("SendSMS", "About to send SMSs thru online gateway");
                 new OnlineSMSSendingTask().execute(numbers);
@@ -104,6 +100,194 @@ public class SendSMSActivity extends AppCompatActivity {
 
         } else {
             Toast.makeText(this, "At least one mobile number should be there to send SMS", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class SimSMSSendingTask extends AsyncTask<String, Integer, String> {
+
+        private boolean isReceiversRegistered;
+        private final String message;
+        private String[] numbers;
+        private Object lockObj;
+
+        public SimSMSSendingTask(String message)
+        {
+            this.message = message;
+            lockObj = new Object();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Log.d("SendSMS", "inside onPreExecute of SimSMSSendingTask. About to display the progress dialog");
+            progressDialog = new ProgressDialog(SendSMSActivity.this);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setTitle(getResources().getString(R.string.sending));
+            progressDialog.setMessage(getResources().getString(R.string.sending_wait_message));
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(true);
+            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                public void onCancel(DialogInterface dialog) {
+                    SendSMSActivity.SimSMSSendingTask.this.cancel(true);
+//                    TextView empty = (TextView) findViewById(R.id.error_message_main_activity);
+//                    empty.setText(getResources().getString(R.string.cancelled_loading_active_menu));
+                }
+            });
+            progressDialog.show();
+            registerBroadCastReceivers();
+        }
+
+        @Override
+        protected String doInBackground(String... numbers) {
+            this.numbers = numbers;
+            mMessageSentCount = 0;
+            int targetNumberCount = numbers.length;
+            for (int i = 0; i < targetNumberCount; i++) {
+                sendSMS(numbers[mMessageSentCount].toString(), message);
+                synchronized (lockObj)
+                {
+                    try{
+                        lockObj.wait(10000);
+                    } catch (InterruptedException e) {
+                        Log.e("SendSMS", "Caught InterruptedException on sending SMS via SIM", e);
+                    }
+                }
+                publishProgress((i + 1) * 100/targetNumberCount);
+            }
+            SendSMSActivity.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(SendSMSActivity.this, "All SMS have been sent", Toast.LENGTH_SHORT).show();
+                }
+            });
+            return "DONE";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            progressDialog.setProgress(progress[0].intValue());
+        }
+
+        @Override
+        protected void onCancelled(String result) {
+            // TODO: Implement it
+        }
+
+        protected void onPostExecute(String result) {
+            unregisterBroadcastReceivers();
+            progressDialog.dismiss();
+        }
+
+
+        private void sendSMS(final String phoneNumber, String message) {
+            if (!isValidPhoneNumber(phoneNumber)) {
+                SendSMSActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(SendSMSActivity.this, "SMS to invalid number failed: " + phoneNumber, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                Thread callbackSimulatorThread = new Thread() {
+                    @Override
+                    public void run() {
+                        mMessageSentParts = 0;
+                        mMessageSentCount++;
+                        synchronized (lockObj)
+                        {
+                            lockObj.notify();
+                        }
+                    }
+                };
+                callbackSimulatorThread.start();
+                return;
+            }
+            SmsManager sms = SmsManager.getDefault();
+            ArrayList<String> parts = sms.divideMessage(message);
+            mMessageSentTotalParts = parts.size();
+
+            Log.i("Message Count", "Message Count: " + mMessageSentTotalParts);
+
+            ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
+            ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
+
+            PendingIntent sentPI = PendingIntent.getBroadcast(SendSMSActivity.this, 0, new Intent(SENT), 0);
+            PendingIntent deliveredPI = PendingIntent.getBroadcast(SendSMSActivity.this, 0, new Intent(DELIVERED), 0);
+
+            for (int j = 0; j < mMessageSentTotalParts; j++) {
+                sentIntents.add(sentPI);
+                deliveryIntents.add(deliveredPI);
+            }
+            mMessageSentParts = 0;
+            sms.sendMultipartTextMessage(phoneNumber, null, parts, sentIntents, deliveryIntents);
+        }
+
+        private BroadcastReceiver smsSentReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        mMessageSentParts++;
+                        if (mMessageSentParts == mMessageSentTotalParts) {
+                            Toast.makeText(getBaseContext(), "SMS sent to " + numbers[mMessageSentCount],
+                                    Toast.LENGTH_SHORT).show();
+                            Log.v("SendSMS", "Sent SMS " + mMessageSentCount + ", part " + mMessageSentParts + " of " + mMessageSentTotalParts);
+                            mMessageSentCount++;
+                            synchronized (lockObj)
+                            {
+                                lockObj.notify();
+                            }
+                        }
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getBaseContext(), "Generic failure",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getBaseContext(), "No service",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getBaseContext(), "Null PDU",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "Radio off",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+
+        private BroadcastReceiver smsDeliveredReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "SMS not delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+
+        private void registerBroadCastReceivers() {
+            if (!isReceiversRegistered) {
+                Log.d("SendSMS", "registerBroadCastReceivers");
+                registerReceiver(smsSentReceiver, new IntentFilter(SENT));
+                registerReceiver(smsDeliveredReceiver, new IntentFilter(DELIVERED));
+                isReceiversRegistered = true;
+            }
+        }
+
+        private void unregisterBroadcastReceivers() {
+            if (isReceiversRegistered) {
+                Log.d("SendSMS", "unregisterBroadcastReceivers");
+                unregisterReceiver(smsSentReceiver);
+                unregisterReceiver(smsDeliveredReceiver);
+                isReceiversRegistered = false;
+            }
         }
     }
 
@@ -121,8 +305,6 @@ public class SendSMSActivity extends AppCompatActivity {
             progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 public void onCancel(DialogInterface dialog) {
                     SendSMSActivity.OnlineSMSSendingTask.this.cancel(true);
-//                    TextView empty = (TextView) findViewById(R.id.error_message_main_activity);
-//                    empty.setText(getResources().getString(R.string.cancelled_loading_active_menu));
                 }
             });
             progressDialog.show();
@@ -134,7 +316,7 @@ public class SendSMSActivity extends AppCompatActivity {
             Log.d("SendSMS", "inside doInBackground of OnlineSMSSendingTask with targetNumbersCount = " + targetNumbersCount);
             for (int i = 0; i < targetNumbersCount; i++) {
                 sendSMSviaOnlineGateway(targetNumbers[i]);
-                publishProgress(i * 100 / targetNumbersCount);
+                publishProgress((i + 1) * 100 / targetNumbersCount);
             }
             return "SUCCESS";
         }
@@ -231,60 +413,6 @@ public class SendSMSActivity extends AppCompatActivity {
         return false;
     }
 
-    private void sendNextMessage() {
-        if (thereAreSmsToSend()) {
-            sendSMS(numbers[mMessageSentCount].toString(), message);
-        } else {
-            this.runOnUiThread(new Runnable() {
-                public void run() {
-                    Toast.makeText(SendSMSActivity.this, "All SMS have been sent", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
-    private boolean thereAreSmsToSend() {
-        return mMessageSentCount < numbers.length;
-    }
-
-
-    private void sendSMS(final String phoneNumber, String message) {
-        if (!isValidPhoneNumber(phoneNumber)) {
-            this.runOnUiThread(new Runnable() {
-                public void run() {
-                    Toast.makeText(SendSMSActivity.this, "SMS to invalid number failed: " + phoneNumber, Toast.LENGTH_SHORT).show();
-                }
-            });
-            Thread callbackSimulatorThread = new Thread() {
-                @Override
-                public void run() {
-                    mMessageSentCount++;
-                    sendNextMessage();
-                }
-            };
-            callbackSimulatorThread.start();
-            return;
-        }
-        SmsManager sms = SmsManager.getDefault();
-        ArrayList<String> parts = sms.divideMessage(message);
-        mMessageSentTotalParts = parts.size();
-
-        Log.i("Message Count", "Message Count: " + mMessageSentTotalParts);
-
-        ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
-        ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
-
-        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0);
-        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0);
-
-        for (int j = 0; j < mMessageSentTotalParts; j++) {
-            sentIntents.add(sentPI);
-            deliveryIntents.add(deliveredPI);
-        }
-
-        mMessageSentParts = 0;
-        sms.sendMultipartTextMessage(phoneNumber, null, parts, sentIntents, deliveryIntents);
-    }
 
     private boolean isValidPhoneNumber(String phoneNumber) {
         if (!TextUtils.isEmpty(phoneNumber) && isNumber(phoneNumber.trim())) {
@@ -309,76 +437,10 @@ public class SendSMSActivity extends AppCompatActivity {
         return true;
     }
 
-    private BroadcastReceiver smsSentReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context arg0, Intent arg1) {
-            switch (getResultCode()) {
-                case Activity.RESULT_OK:
-                    mMessageSentParts++;
-                    if (mMessageSentParts == mMessageSentTotalParts) {
-                        Toast.makeText(getBaseContext(), "SMS sent to " + numbers[mMessageSentCount],
-                                Toast.LENGTH_SHORT).show();
-                        Log.v("SendSMS", "Sent SMS " + mMessageSentCount + ", part " + mMessageSentParts + " of " + mMessageSentTotalParts);
-                        mMessageSentCount++;
-                        sendNextMessage();
-                    }
-                    break;
-                case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                    Toast.makeText(getBaseContext(), "Generic failure",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                case SmsManager.RESULT_ERROR_NO_SERVICE:
-                    Toast.makeText(getBaseContext(), "No service",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                case SmsManager.RESULT_ERROR_NULL_PDU:
-                    Toast.makeText(getBaseContext(), "Null PDU",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                case SmsManager.RESULT_ERROR_RADIO_OFF:
-                    Toast.makeText(getBaseContext(), "Radio off",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
 
-    private BroadcastReceiver smsDeliveredReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context arg0, Intent arg1) {
-            switch (getResultCode()) {
-
-                case Activity.RESULT_OK:
-                    Toast.makeText(getBaseContext(), "SMS delivered",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                case Activity.RESULT_CANCELED:
-                    Toast.makeText(getBaseContext(), "SMS not delivered",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
-
-    private void registerBroadCastReceivers() {
-        if (!isReceiversRegistered) {
-            registerReceiver(smsSentReceiver, new IntentFilter(SENT));
-            registerReceiver(smsDeliveredReceiver, new IntentFilter(DELIVERED));
-            isReceiversRegistered = true;
-        }
-    }
-
-    private void unregisterBroadcastReceivers() {
-        if (isReceiversRegistered) {
-            unregisterReceiver(smsSentReceiver);
-            unregisterReceiver(smsDeliveredReceiver);
-            isReceiversRegistered = false;
-        }
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterBroadcastReceivers();
     }
 }
