@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.corpus.survey.db.SurveySQLiteHelper;
+import com.corpus.survey.sms.SendSMSActivity;
 
 public class SurveyDetailsActivity extends AppCompatActivity {
 

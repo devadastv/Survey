@@ -15,6 +15,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.corpus.survey.db.SurveySQLiteHelper;
+import com.corpus.survey.sms.SendSMSActivity;
 
 public class SurveyListActivity extends AppCompatActivity {
 
