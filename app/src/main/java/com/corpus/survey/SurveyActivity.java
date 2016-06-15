@@ -3,6 +3,7 @@ package com.corpus.survey;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ public class SurveyActivity extends AppCompatActivity {
     private EditText mMobileNumber;
     private int gender;
     private EditText mDateOfBirth;
+    private long dateOfBirthMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,7 @@ public class SurveyActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
             Survey survey = new Survey(surveyPersonName, mobileNumber, gender, System.currentTimeMillis(), null);
+            survey.setDateOfBirth(dateOfBirthMillis);
             dbHelper.createSurvey(survey);
             Toast.makeText(this, "This survey is successfully submitted. Thanks!", Toast.LENGTH_SHORT).show();
             finish();
@@ -138,9 +141,13 @@ public class SurveyActivity extends AppCompatActivity {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            // TODO: If the date needs to be initialized with the value in EditText, it needs to be done here.
+            // Use the current date as the default date in the picker if there is no date already set in DatePicker
             final Calendar c = Calendar.getInstance();
+            SurveyActivity activity = (SurveyActivity)getActivity();
+            if (activity.dateOfBirthMillis >= 1)
+            {
+                c.setTimeInMillis(activity.dateOfBirthMillis);
+            }
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
@@ -154,6 +161,7 @@ public class SurveyActivity extends AppCompatActivity {
             newDate.set(year, month, day);
             SurveyActivity activity = (SurveyActivity)getActivity();
             activity.mDateOfBirth.setText(dateFormatter.format(newDate.getTime()));
+            activity.dateOfBirthMillis = newDate.getTimeInMillis();
         }
     }
 }
