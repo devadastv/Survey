@@ -49,6 +49,46 @@
             android:gravity="center" />
 
         <TextView
+            android:id="@+id/details_contact_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Family Group"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:paddingTop="5dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/details_email_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="test@test.com"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:paddingTop="5dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/details_gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:paddingTop="5dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/details_place"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bangalore"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:paddingTop="5dp"
+            android:gravity="center" />
+
+        <TextView
             android:id="@+id/date_of_birth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,6 +107,7 @@
             android:textSize="20sp"
             android:paddingTop="5dp"
             android:gravity="center" />
+
 
         <TextView
             android:id="@+id/interested_in"

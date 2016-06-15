@@ -1,9 +1,11 @@
 package com.corpus.survey;
 
+import java.io.Serializable;
+
 /**
  * Created by devadas.vijayan on 5/30/16.
  */
-public class Survey {
+public class Survey implements Serializable {
 
     private String userName;
     private String phoneNumber;
@@ -47,6 +49,20 @@ public class Survey {
         return gender;
     }
 
+    public String getGenderText() {
+        switch (gender)
+        {
+            case GENDER_MALE:
+                return "Male";
+            case GENDER_FEMALE:
+                return "Female";
+            case GENDER_OTHER:
+                return "Other gender/Not specified";
+            default:
+                return "Gender not specified";
+        }
+    }
+
     public void setDateOfBirth(long dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
@@ -56,7 +72,8 @@ public class Survey {
     }
 
     public String getContactGroup() {
-        return contactGroup;
+        return "Family Group *"; //TODO: Store and get the value from DB
+//        return contactGroup;
     }
 
     public String getPlace() {

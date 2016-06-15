@@ -20,6 +20,11 @@ import android.widget.TextView;
 import com.corpus.survey.db.SurveySQLiteHelper;
 import com.corpus.survey.sms.SendSMSActivity;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class SurveyDetailsActivity extends AppCompatActivity {
 
     SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
@@ -103,13 +108,15 @@ public class SurveyDetailsActivity extends AppCompatActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+
+        private static SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-        private static final String ARG_SURVEY_USER_NAME = "user_name";
-        private static final String ARG_SURVEY_USER_NUMBER = "user_number";
+        private static final String ARG_SURVEY_OBJECT = "survey_object";
+        private static final String ARG_TOTAL_COUNT = "total_count";
 
         public PlaceholderFragment() {
         }
@@ -118,12 +125,12 @@ public class SurveyDetailsActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber, Survey survey) {
+        public static PlaceholderFragment newInstance(int sectionNumber, int totalCount, Survey survey) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            args.putString(ARG_SURVEY_USER_NAME, survey.getUserName());
-            args.putString(ARG_SURVEY_USER_NUMBER, survey.getPhoneNumber());
+            args.putInt(ARG_TOTAL_COUNT, totalCount);
+            args.putSerializable(ARG_SURVEY_OBJECT, survey);
             fragment.setArguments(args);
             return fragment;
         }
@@ -132,10 +139,35 @@ public class SurveyDetailsActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_survey_details, container, false);
+
+            Survey survey = (Survey) getArguments().getSerializable(ARG_SURVEY_OBJECT);
+            int sectionNumber = (int)getArguments().getInt(ARG_SECTION_NUMBER);
+            int totalCount = (int)getArguments().getInt(ARG_TOTAL_COUNT);
+
+            TextView mSurveyEntryCount = (TextView) rootView.findViewById(R.id.survey_entry_count);
             TextView mUserName = (TextView) rootView.findViewById(R.id.user_name);
             TextView mPhoneNumber = (TextView) rootView.findViewById(R.id.phone_number);
-            mUserName.setText(getArguments().getString(ARG_SURVEY_USER_NAME));
-            mPhoneNumber.setText(getArguments().getString(ARG_SURVEY_USER_NUMBER));
+            TextView mContactsGroup = (TextView) rootView.findViewById(R.id.details_contact_group);
+            TextView mEmail = (TextView) rootView.findViewById(R.id.details_email_id);
+            TextView mGender = (TextView) rootView.findViewById(R.id.details_gender);
+            TextView mPlace = (TextView) rootView.findViewById(R.id.details_place);
+            TextView mDateOfBirth = (TextView) rootView.findViewById(R.id.date_of_birth);
+            TextView mDateOfShopping = (TextView) rootView.findViewById(R.id.date_of_shopping);
+
+            mSurveyEntryCount.setText("Contact " + (sectionNumber + 1) + " of " + totalCount);
+            mUserName.setText(survey.getUserName());
+            mPhoneNumber.setText(survey.getPhoneNumber());
+            mContactsGroup.setText(survey.getContactGroup());
+            mEmail.setText(survey.getEmail());
+            mGender.setText(survey.getGenderText());
+            mPlace.setText(survey.getPlace());
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(survey.getDateOfBirth());
+            mDateOfBirth.setText("Date of Birth: " + dateFormatter.format(calendar.getTime()));
+
+            calendar.setTimeInMillis(survey.getCreatedDate());
+            mDateOfShopping.setText("Date of shopping: " + dateFormatter.format(calendar.getTime()));
             return rootView;
         }
     }
@@ -155,7 +187,7 @@ public class SurveyDetailsActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             Survey currentSurvey = dbHelper.getSurvey(position + 1);
-            return PlaceholderFragment.newInstance(position, currentSurvey);
+            return PlaceholderFragment.newInstance(position, getCount(), currentSurvey);
         }
 
         @Override

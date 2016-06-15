@@ -124,16 +124,17 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
             Date addedOn = new Date(millis);
             DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
             String formattedDateString = formatter.format(addedOn);
-            Log.d("DBHelper", "Formatted time from DB = " + formattedDateString + " with original value in DB = " + millis);
+
             String name = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_NAME));
             String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_PHONE));
             String email = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_EMAIL));
             int gender = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_GENDER));
             String place = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_PLACE));
-            int createdDate = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CREATED_DATE));
-            int dateOfbirth = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_DATE_OF_BIRTH));
+            long createdDate = cursor.getLong(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CREATED_DATE));
+            long dateOfbirth = cursor.getLong(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_DATE_OF_BIRTH));
             String contactGroup = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CONTACT_GROUP));
             Survey survey = new Survey(name, phoneNumber, gender, createdDate, contactGroup);
+            Log.d("DBHelper", "From DB: createdDate = " + createdDate + " dateOfbirth = " + dateOfbirth);
             survey.setEmail(email);
             survey.setPlace(place);
             survey.setDateOfBirth(dateOfbirth);
