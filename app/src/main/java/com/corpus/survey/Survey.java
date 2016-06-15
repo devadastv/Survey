@@ -7,12 +7,13 @@ public class Survey {
 
     private String userName;
     private String phoneNumber;
-    private int gender;
-    private long dateOfBirth;
-    private long createdDate;
-    private String contactGroup;
-    private String place;
     private String email;
+    private int gender;
+    private String place;
+    private long createdDate;
+    private long dateOfBirth;
+    private String contactGroup;
+
 //    private String[] categoriesInterestedIn; // TODO: Later after discussion
 
 
