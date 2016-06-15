@@ -116,21 +116,21 @@ public class SurveyListActivity extends AppCompatActivity {
     }
 
     private String getFormattedTargetMobileNumbers() {
-        Cursor currentFilteredSurveyCursor = null;
+        Cursor filteredCursor = null;
         StringBuffer buffer = new StringBuffer();
         try {
-            currentFilteredSurveyCursor = currentFilteredCursor;
-            currentFilteredSurveyCursor.moveToFirst();
-            if (currentFilteredSurveyCursor.getCount() > 0) {
+            filteredCursor = currentFilteredCursor;
+            filteredCursor.moveToFirst();
+            if (filteredCursor.getCount() > 0) {
                 do {
-                    String phoneNumber = currentFilteredSurveyCursor.getString(SurveySQLiteHelper.SURVEY_COLUMN_PHONE_INDEX);
+                    String phoneNumber = filteredCursor.getString(filteredCursor.getColumnIndexOrThrow(SurveySQLiteHelper.SURVEY_COLUMN_PHONE));
                     buffer.append(phoneNumber);
                     buffer.append(", ");
-                } while (currentFilteredSurveyCursor.moveToNext());
+                } while (filteredCursor.moveToNext());
             }
         } finally {
-            if (null != currentFilteredSurveyCursor && !currentFilteredSurveyCursor.isClosed()) {
-                currentFilteredSurveyCursor.close();
+            if (null != filteredCursor && !filteredCursor.isClosed()) {
+                filteredCursor.close();
             }
         }
         return buffer.toString().trim();

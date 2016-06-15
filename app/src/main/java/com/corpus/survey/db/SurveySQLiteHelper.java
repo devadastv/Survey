@@ -18,17 +18,18 @@ import java.util.Date;
  */
 public class SurveySQLiteHelper extends SQLiteOpenHelper {
 
-    private static final int database_VERSION = 2;
+    private static final int database_VERSION = 3;
     public static final String DATABASE_NAME = "SurveyDB";
     public static final String SURVEY_TABLE_NAME = "survey";
     public static final String SURVEY_COLUMN_ID = "_id";
     public static final String SURVEY_COLUMN_NAME = "name";
     public static final String SURVEY_COLUMN_PHONE = "phone";
+    public static final String SURVEY_COLUMN_EMAIL = "email";
+    public static final String SURVEY_COLUMN_GENDER = "gender";
+    public static final String SURVEY_COLUMN_PLACE = "place";
     public static final String SURVEY_COLUMN_CREATED_DATE = "created_date";
-
-    public static final int SURVEY_COLUMN_ID_INDEX = 0;
-    public static final int SURVEY_COLUMN_NAME_INDEX = 1;
-    public static final int SURVEY_COLUMN_PHONE_INDEX = 2;
+    public static final String SURVEY_COLUMN_DATE_OF_BIRTH = "date_of_birth";
+    public static final String SURVEY_COLUMN_CONTACT_GROUP = "contact_group";
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER ";
@@ -39,7 +40,12 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
                     SURVEY_COLUMN_ID + INTEGER_TYPE + " PRIMARY KEY," +
                     SURVEY_COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
                     SURVEY_COLUMN_PHONE + TEXT_TYPE + COMMA_SEP +
-                    SURVEY_COLUMN_CREATED_DATE + INTEGER_TYPE +
+                    SURVEY_COLUMN_EMAIL + TEXT_TYPE + COMMA_SEP +
+                    SURVEY_COLUMN_GENDER + INTEGER_TYPE + COMMA_SEP +
+                    SURVEY_COLUMN_PLACE + TEXT_TYPE + COMMA_SEP +
+                    SURVEY_COLUMN_CREATED_DATE + INTEGER_TYPE + COMMA_SEP +
+                    SURVEY_COLUMN_DATE_OF_BIRTH + INTEGER_TYPE + COMMA_SEP +
+                    SURVEY_COLUMN_CONTACT_GROUP + TEXT_TYPE +
                     " )";
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + SURVEY_TABLE_NAME;
@@ -73,6 +79,12 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(SURVEY_COLUMN_NAME, survey.getUserName());
         values.put(SURVEY_COLUMN_PHONE, survey.getPhoneNumber());
+        values.put(SURVEY_COLUMN_EMAIL, survey.getEmail());
+        values.put(SURVEY_COLUMN_GENDER, survey.getGender());
+        values.put(SURVEY_COLUMN_PLACE, survey.getPlace());
+        values.put(SURVEY_COLUMN_CREATED_DATE, survey.getCreatedDate());
+        values.put(SURVEY_COLUMN_DATE_OF_BIRTH, survey.getDateOfBirth());
+        values.put(SURVEY_COLUMN_CONTACT_GROUP, survey.getContactGroup());
         db.insert(SURVEY_TABLE_NAME, null, values);
         db.close();
     }
@@ -113,8 +125,12 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
             DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
             String formattedDateString = formatter.format(addedOn);
             Log.d("DBHelper", "Formatted time from DB = " + formattedDateString + " with original value in DB = " + millis);
-            Survey survey = new Survey(cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_NAME)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_PHONE)), millis);
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_NAME));
+            String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_PHONE));
+            int gender = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_GENDER));
+            int createdDate = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CREATED_DATE));
+            String contactGroup = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CONTACT_GROUP));
+            Survey survey = new Survey(name, phoneNumber, gender, createdDate, contactGroup);
             cursor.close();
             return survey;
         }
