@@ -96,8 +96,27 @@ public class SurveyActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
+
             Survey survey = new Survey(surveyPersonName, mobileNumber, gender, System.currentTimeMillis(), null);
+
+            // Set optional fields
+            // Email ID
+            EditText mEmail = (EditText) findViewById(R.id.customer_email);
+            if (mEmail.length() > 0)
+            {
+                survey.setEmail(mEmail.getText().toString());
+            }
+
+            // Place
+            EditText mSurveyPlace = (EditText) findViewById(R.id.place);
+            if (mSurveyPlace.length() > 0)
+            {
+                survey.setPlace(mSurveyPlace.getText().toString());
+            }
+
+            // Date of Birth
             survey.setDateOfBirth(dateOfBirthMillis);
+
             dbHelper.createSurvey(survey);
             Toast.makeText(this, "This survey is successfully submitted. Thanks!", Toast.LENGTH_SHORT).show();
             finish();
