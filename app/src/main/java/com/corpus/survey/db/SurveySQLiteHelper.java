@@ -127,10 +127,16 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
             Log.d("DBHelper", "Formatted time from DB = " + formattedDateString + " with original value in DB = " + millis);
             String name = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_NAME));
             String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_PHONE));
+            String email = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_EMAIL));
             int gender = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_GENDER));
+            String place = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_PLACE));
             int createdDate = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CREATED_DATE));
+            int dateOfbirth = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_DATE_OF_BIRTH));
             String contactGroup = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CONTACT_GROUP));
             Survey survey = new Survey(name, phoneNumber, gender, createdDate, contactGroup);
+            survey.setEmail(email);
+            survey.setPlace(place);
+            survey.setDateOfBirth(dateOfbirth);
             cursor.close();
             return survey;
         }
