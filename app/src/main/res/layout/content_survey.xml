@@ -61,6 +61,20 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/customer_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
@@ -95,40 +109,27 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/sex"
+                    android:id="@+id/place"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/sex"
-                    android:inputType="textFilter"
-                    android:maxLines="1"
+                    android:hint="@string/place"
+                    android:inputType="textCapWords"
+                    android:maxLines="4"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Date of Birth: "></TextView>
-
-            <DatePicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:calendarViewShown="false"
-                android:datePickerMode="spinner"
-                android:endYear="2016"
-                android:startYear="1940"></DatePicker>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/feedback"
+                    android:id="@+id/date_of_birth"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/date_of_birth"
-                    android:inputType="textMultiLine"
-                    android:maxLines="4"
+                    android:inputType="none"
+                    android:maxLines="1"
                     android:singleLine="false" />
 
             </android.support.design.widget.TextInputLayout>

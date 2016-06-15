@@ -1,7 +1,10 @@
 package com.corpus.survey;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -10,11 +13,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.corpus.survey.db.SurveySQLiteHelper;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class SurveyActivity extends AppCompatActivity {
 
@@ -22,6 +30,7 @@ public class SurveyActivity extends AppCompatActivity {
     private EditText mSurveyPersonName;
     private EditText mMobileNumber;
     private int gender;
+    private EditText mDateOfBirth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +42,16 @@ public class SurveyActivity extends AppCompatActivity {
         mSurveyPersonName = (EditText) findViewById(R.id.survey_person_name);
         mSurveyPersonName.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mMobileNumber = (EditText) findViewById(R.id.mobile_number);
+
+        mDateOfBirth = (EditText) findViewById(R.id.date_of_birth);
+        mDateOfBirth.setInputType(InputType.TYPE_NULL);
+        mDateOfBirth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getSupportFragmentManager(), "datePicker");
+            }
+        });
 
         Button clickButton = (Button) findViewById(R.id.submit);
         clickButton.setOnClickListener(new View.OnClickListener() {
@@ -110,5 +129,31 @@ public class SurveyActivity extends AppCompatActivity {
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        private SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            // TODO: If the date needs to be initialized with the value in EditText, it needs to be done here.
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            Calendar newDate = Calendar.getInstance();
+            newDate.set(year, month, day);
+            SurveyActivity activity = (SurveyActivity)getActivity();
+            activity.mDateOfBirth.setText(dateFormatter.format(newDate.getTime()));
+        }
     }
 }
