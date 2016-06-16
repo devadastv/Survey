@@ -3,20 +3,20 @@ package com.corpus.survey;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +27,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.corpus.survey.usermanagement.UserProfileManager;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +47,6 @@ import java.util.List;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world", "test@a.c:tester"
-    };
     public static final String ADMIN_PASSWORD = "aa";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -248,7 +252,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
 
         private final String mEmail;
         private final String mPassword;
@@ -259,45 +263,44 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            if (true)
-            {
-                return true; // TODO: Remove this hack on production
-            }
+        protected Integer doInBackground(Void... params) {
+            int authenticationStatus = UserProfileManager.AUTHENTICATION_FAILED;
             try {
-                // Simulate network access.
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                return false;
+                authenticationStatus = UserProfileManager.getInstance().performSignIn(mEmail, mPassword);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return false;
+            return authenticationStatus;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Integer authenticationStatus) {
             mAuthTask = null;
             showProgress(false);
-
-            if (success) {
-                Intent contentSummaryIntent = new Intent(LoginActivity.this, SummaryActivity.class);
-                contentSummaryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(contentSummaryIntent);
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+            TextView mErrorView = (TextView) findViewById(R.id.login_error_message);
+            switch (authenticationStatus) {
+                case UserProfileManager.AUTHENTICATION_SUCCESS:
+                    Intent contentSummaryIntent = new Intent(LoginActivity.this, SummaryActivity.class);
+                    contentSummaryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(contentSummaryIntent);
+                    finish();
+                    break;
+                case UserProfileManager.AUTHENTICATION_FAILED:
+                    mErrorView.setText(getString(R.string.error_incorrect_credentials));
+                    mPasswordView.setText("");
+                    mPasswordView.requestFocus();
+                    break;
+                case UserProfileManager.AUTHENTICATION_FIELD_MISSING:
+                    Log.e("Login", "AUTHENTICATION_FIELD_MISSING should not happen since we do a prevalidation before submission. Check !");
+                    mErrorView.setText(getString(R.string.error_missing_mandatory_field));
+                    // This is just a dummy action since this is a scenario which should never happen
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                    break;
+                case UserProfileManager.AUTHENTICATION_ACCOUNT_DEACTIVATED:
+                    mErrorView.setText(getString(R.string.error_account_deactivated));
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    break;
             }
         }
 

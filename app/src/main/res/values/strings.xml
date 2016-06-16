@@ -9,6 +9,9 @@
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_account_deactivated">This account is deactivated. Please contact administrator</string>
+    <string name="error_missing_mandatory_field">Either Email or Password is empty</string>
+    <string name="error_incorrect_credentials">Invalid Credentials. Please try again\nIf not registered, register before proceeding</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."

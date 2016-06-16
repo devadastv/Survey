@@ -74,6 +74,14 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/login_error_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#881111"
+                android:paddingTop="5dp"
+                android:gravity="center" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
