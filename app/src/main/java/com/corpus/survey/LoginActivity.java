@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -30,14 +29,6 @@ import android.widget.TextView;
 import com.corpus.survey.usermanagement.UserProfileManager;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -266,7 +257,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Integer doInBackground(Void... params) {
             int authenticationStatus = UserProfileManager.AUTHENTICATION_FAILED;
             try {
-                authenticationStatus = UserProfileManager.getInstance().performSignIn(mEmail, mPassword);
+                authenticationStatus = UserProfileManager.getInstance().performSignIn(mEmail, mPassword, LoginActivity.this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -300,6 +291,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 case UserProfileManager.AUTHENTICATION_ACCOUNT_DEACTIVATED:
                     mErrorView.setText(getString(R.string.error_account_deactivated));
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    break;
+                case UserProfileManager.NOT_CONNECTED_TO_NETWORK:
+                    mErrorView.setText(getString(R.string.error_not_connected_to_network));
                     break;
             }
         }

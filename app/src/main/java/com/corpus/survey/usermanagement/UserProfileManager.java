@@ -1,5 +1,9 @@
 package com.corpus.survey.usermanagement;
 
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.corpus.survey.R;
@@ -33,9 +37,9 @@ public class UserProfileManager {
     public static final int AUTHENTICATION_FAILED = 2;
     public static final int AUTHENTICATION_FIELD_MISSING = 3;
     public static final int AUTHENTICATION_ACCOUNT_DEACTIVATED = 4;
-
     public static final int MESSAGE_SUBMISSION_SUCCESS = 5;
     public static final int MESSAGE_SUBMISSION_FAILED_INSUFFICIENT_BALANCE = 6;
+    public static final int NOT_CONNECTED_TO_NETWORK = 7;
 
     private String currentUserEmail;
 
@@ -46,7 +50,14 @@ public class UserProfileManager {
         return instance;
     }
 
-    public int performSignIn(String email, String password) throws IOException {
+    public int performSignIn(String email, String password, Activity activity) throws IOException {
+        // Check network availability first.
+        ConnectivityManager connMgr = (ConnectivityManager)
+                activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected()) {
+            return NOT_CONNECTED_TO_NETWORK;
+        }
         InputStream is = null;
         OutputStreamWriter wr = null;
         String data = URLEncoder.encode("ID", "UTF-8")
@@ -104,9 +115,7 @@ public class UserProfileManager {
             } else if (contentAsString.contains(AUTHENTICATION_ACCOUNT_DEACTIVATED_STRING)) {
                 authenticationStatus = AUTHENTICATION_ACCOUNT_DEACTIVATED;
             }
-        }
-        else
-        {
+        } else {
             authenticationStatus = AUTHENTICATION_FAILED;
         }
         //"Message Submitted" and ""Insufficient Credit" strings will not reach this method since it is response for SMS sending only.
