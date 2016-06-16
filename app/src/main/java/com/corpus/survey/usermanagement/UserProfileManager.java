@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.corpus.survey.R;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 
 /**
@@ -41,7 +43,12 @@ public class UserProfileManager {
     public static final int MESSAGE_SUBMISSION_FAILED_INSUFFICIENT_BALANCE = 6;
     public static final int NOT_CONNECTED_TO_NETWORK = 7;
 
+    public static final String MAIN_URL = "http://sms.sirentext.com/sms.aspx";
+
+    public static final int MAX_TARGET_NUMBERS_PER_HTTP_POST = 100;
+
     private String currentUserEmail;
+    private String password;
 
     public static UserProfileManager getInstance() {
         if (null == instance) {
@@ -70,10 +77,10 @@ public class UserProfileManager {
         int len = 500;
 
         try {
-            URL url = new URL("http://sms.sirentext.com/sms.aspx");
+            URL url = new URL(MAIN_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(5000);
-            conn.setConnectTimeout(7000);
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
 
@@ -93,6 +100,7 @@ public class UserProfileManager {
             int authenticationStatus = getAuthenticationStatusFromResponseString(contentAsString);
             if (authenticationStatus == AUTHENTICATION_SUCCESS) {
                 this.currentUserEmail = email;
+                this.password = password;
             }
             return authenticationStatus;
         } finally {
@@ -144,5 +152,72 @@ public class UserProfileManager {
         return currentUserEmail;
     }
 
+    public int sendSMSviaOnlineGateway(String[] targetMobileNumbers, String message, Activity activity) throws IOException {
+        // Check network availability first.
+        ConnectivityManager connMgr = (ConnectivityManager)
+                activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected()) {
+            return NOT_CONNECTED_TO_NETWORK;
+        }
+        InputStream is = null;
+        OutputStreamWriter wr = null;
+        String formattedTargetMobileNumbers = getFormattedTargetMobileNumbers(targetMobileNumbers);
+        String data = URLEncoder.encode("ID", "UTF-8")
+                + "=" + URLEncoder.encode(currentUserEmail, "UTF-8");
+        data += "&" + URLEncoder.encode("Pwd", "UTF-8") + "="
+                + URLEncoder.encode(password, "UTF-8");
+        data += "&" + URLEncoder.encode("PhNo", "UTF-8") + "="
+                + URLEncoder.encode(formattedTargetMobileNumbers, "UTF-8");
+        data += "&" + URLEncoder.encode("Text", "UTF-8") + "="
+                + URLEncoder.encode(message, "UTF-8");
 
+        // Only display the first 500 characters of the retrieved web page content.
+        int len = 500;
+
+        try {
+            URL url = new URL(MAIN_URL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+
+            // Starts the query
+            conn.connect();
+            wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write(data);
+            wr.flush();
+
+            int response = conn.getResponseCode();
+            Log.d("SendSMS", "The response is: " + response + " for message = " + message
+                    + " to formattedTargetMobileNumbers = " + formattedTargetMobileNumbers);
+            is = conn.getInputStream();
+
+            // Convert the InputStream into a string
+            String contentAsString = readIt(is, len);
+            Log.d("SendSMS", "The contentAsString is: " + contentAsString);
+            int authenticationStatus = getAuthenticationStatusFromResponseString(contentAsString);
+            return authenticationStatus;
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+            if (wr != null) {
+                wr.close();
+            }
+        }
+
+    }
+
+    private String getFormattedTargetMobileNumbers(String[] targetMobileNumbers) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < targetMobileNumbers.length; i++) {
+            buffer.append(targetMobileNumbers[i]);
+            if (i != targetMobileNumbers.length - 1) {
+                buffer.append(",");
+            }
+        }
+        return buffer.toString();
+    }
 }

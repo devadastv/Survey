@@ -6,8 +6,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.corpus.survey.R;
+import com.corpus.survey.usermanagement.UserProfileManager;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -18,24 +20,57 @@ import java.net.URLEncoder;
  */
 class OnlineSMSSendingTask extends BaseSmsSendingTask {
 
+    private static final boolean USE_ACTUAL_PROVIDER_FROM_PROFILE = false;
+
     public OnlineSMSSendingTask(String message, SendSMSActivity activity) {
         super(message, activity);
     }
 
     @Override
     String performBackgroundTask() {
-        int targetNumbersCount = numbers.length;
-        Log.d("SendSMS", "inside doInBackground of OnlineSMSSendingTask with targetNumbersCount = " + targetNumbersCount);
-        for (int i = 0; i < targetNumbersCount; i++) {
-            sendSMSviaOnlineGateway(numbers[i]);
-            publishProgress((i + 1) * 100 / targetNumbersCount);
+
+        if (USE_ACTUAL_PROVIDER_FROM_PROFILE) {
+            int numberOfHttpsPostsRequired = (numbers.length / UserProfileManager.MAX_TARGET_NUMBERS_PER_HTTP_POST);
+            if (numbers.length % UserProfileManager.MAX_TARGET_NUMBERS_PER_HTTP_POST >=1)
+            {
+                numberOfHttpsPostsRequired++;
+            }
+            for (int i = 0; i < numberOfHttpsPostsRequired; i++) {
+                String[] targetPhoneNumbers = getTargetPhoneNumbers(i);
+                try {
+                    UserProfileManager.getInstance().sendSMSviaOnlineGateway(targetPhoneNumbers, message, activity);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                publishProgress((i + 1) * 100 / numberOfHttpsPostsRequired);
+            }
+        } else {
+            // Test using smshorizon.co.in gateway
+            int targetNumbersCount = numbers.length;
+            Log.d("SendSMS", "inside doInBackground of OnlineSMSSendingTask with targetNumbersCount = " + targetNumbersCount);
+            for (int i = 0; i < targetNumbersCount; i++) {
+                sendSMSviaOnlineGateway(numbers[i]);
+                publishProgress((i + 1) * 100 / targetNumbersCount);
+            }
         }
+
         activity.runOnUiThread(new Runnable() {
             public void run() {
                 Toast.makeText(activity, "All SMS have been sent", Toast.LENGTH_SHORT).show();
             }
         });
         return "SUCCESS";
+    }
+
+    private String[] getTargetPhoneNumbers(int i) {
+        String[] src = numbers;
+        int srcPos = i * UserProfileManager.MAX_TARGET_NUMBERS_PER_HTTP_POST;
+        int destArrayLength = ((i + 1) * UserProfileManager.MAX_TARGET_NUMBERS_PER_HTTP_POST) > numbers.length ?
+                numbers.length - i * UserProfileManager.MAX_TARGET_NUMBERS_PER_HTTP_POST
+                : UserProfileManager.MAX_TARGET_NUMBERS_PER_HTTP_POST;
+        String[] dest = new String[destArrayLength];
+        System.arraycopy(src, srcPos, dest, 0, dest.length);
+        return dest;
     }
 
 
@@ -95,10 +130,10 @@ class OnlineSMSSendingTask extends BaseSmsSendingTask {
             //reading response
             String response;
             while ((response = reader.readLine()) != null)
+            {
                 //print response
                 Log.d("SendSMS", response);
-            System.out.println(response);
-
+            }
             //finally close connection
             reader.close();
         } catch (Exception e) {
