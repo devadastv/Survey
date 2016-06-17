@@ -1,11 +1,15 @@
 package com.corpus.survey;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,38 +26,40 @@ public class SurveyListActivity extends AppCompatActivity {
     SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
 
     public static final String SURVEY_ITEM_INDEX = "survey_item_index";
-    private final int FILTER_ALL_SURVEYS = 1;
-    private final int FILTER_SURVEYS_LAST_DAY = 2;
-
-    private int currentFilter = FILTER_ALL_SURVEYS;
 
     // This is the Adapter being used to display the list's data
-    private SimpleCursorAdapter mAdapter;
     private Cursor currentFilteredCursor;
 
+    private SimpleCursorAdapter mAdapter;
+
+    private String selection;
+    private String[] selectionArgs;
+    private String orderBy;
+    private int orderByIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        currentFilter = FILTER_ALL_SURVEYS;
         setContentView(R.layout.activity_survey_list);
-        ListView mSurveyList = (ListView) findViewById(R.id.survey_list);
 
-        // For the cursor adapter, specify which columns go into which views
-        String[] fromColumns = {SurveySQLiteHelper.SURVEY_COLUMN_NAME, SurveySQLiteHelper.SURVEY_COLUMN_PHONE};
-        int[] toViews = {android.R.id.text1, android.R.id.text2}; // The TextView in simple_list_item_1
-        updateCurrentFilterCursor();
-        mAdapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_2, currentFilteredCursor,
-                fromColumns, toViews, 0);
-
-        mSurveyList.setAdapter(mAdapter);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        ListView mSurveyList = (ListView) findViewById(R.id.survey_list);
+
+        // For the cursor adapter, specify which columns go into which views
+        String[] fromColumns = {SurveySQLiteHelper.SURVEY_COLUMN_NAME, SurveySQLiteHelper.SURVEY_COLUMN_PHONE};
+        int[] toViews = {android.R.id.text1, android.R.id.text2}; // The TextView in simple_list_item_1
+        currentFilteredCursor =  dbHelper.getFilteredList(selection, selectionArgs, orderBy);
+        mAdapter = new SimpleCursorAdapter(this,
+                android.R.layout.simple_list_item_2, currentFilteredCursor,
+                fromColumns, toViews, 0);
+
+
+        mSurveyList.setAdapter(mAdapter);
         mSurveyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -73,15 +79,8 @@ public class SurveyListActivity extends AppCompatActivity {
     }
 
     private void updateCurrentFilterCursor() {
-
-        switch (currentFilter) {
-            case FILTER_ALL_SURVEYS:
-                currentFilteredCursor =  dbHelper.getAllSurveyList();
-            case FILTER_SURVEYS_LAST_DAY:
-                currentFilteredCursor = dbHelper.getAllSurveyList(); // TODO: Implement later
-            default:
-                currentFilteredCursor = dbHelper.getAllSurveyList();
-        }
+        currentFilteredCursor =  dbHelper.getFilteredList(selection, selectionArgs, orderBy);
+        mAdapter.changeCursor(currentFilteredCursor);
     }
 
     @Override
@@ -98,7 +97,6 @@ public class SurveyListActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_sendSMS) {
             String formattedTargetMobileNumbers = getFormattedTargetMobileNumbers();
             if (TextUtils.isEmpty(formattedTargetMobileNumbers)) {
@@ -111,6 +109,22 @@ public class SurveyListActivity extends AppCompatActivity {
                 startActivity(sendSMSIntent);
             }
             return true;
+        }
+        else if (id == R.id.action_sort) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Sort by:");
+            builder.setCancelable(true);
+            AlertDialog dialog = builder.create();
+            dialog.getListView();
+            builder.setSingleChoiceItems(R.array.sort_options, orderByIndex, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.d("SurveyList", "User selected " + which);
+                    setSortOrder(which);
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -142,6 +156,37 @@ public class SurveyListActivity extends AppCompatActivity {
         if (null != currentFilteredCursor && !currentFilteredCursor.isClosed()) {
             currentFilteredCursor.close();
         }
+    }
+
+    public void setSortOrder(int order) {
+        this.orderByIndex = order;
+        orderBy = getSortOrderString(order);
+        updateCurrentFilterCursor();
+    }
+
+    public String getSortOrderString(int sortOrderIndex) {
+        String sortOrderString;
+        switch (sortOrderIndex)
+        {
+            case SurveySQLiteHelper.SORT_PURCHASE_DATE:
+                sortOrderString = SurveySQLiteHelper.SURVEY_COLUMN_CREATED_DATE + " DESC";
+                break;
+            case SurveySQLiteHelper.SORT_NAME:
+                sortOrderString = SurveySQLiteHelper.SURVEY_COLUMN_NAME + " ASC";
+                break;
+            case SurveySQLiteHelper.SORT_CONTACT_GROUP:
+                sortOrderString = SurveySQLiteHelper.SURVEY_COLUMN_CONTACT_GROUP + " ASC";
+                break;
+            case SurveySQLiteHelper.SORT_DATE_OF_BIRTH:
+                sortOrderString = SurveySQLiteHelper.SURVEY_COLUMN_DATE_OF_BIRTH + " ASC";
+                break;
+            case SurveySQLiteHelper.SORT_PLACE:
+                sortOrderString = SurveySQLiteHelper.SURVEY_COLUMN_PLACE + " ASC";
+                break;
+            default:
+                sortOrderString = SurveySQLiteHelper.SURVEY_COLUMN_CREATED_DATE + " DESC";
+        }
+        return sortOrderString;
     }
 }
 

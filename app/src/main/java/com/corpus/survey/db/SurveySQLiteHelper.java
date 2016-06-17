@@ -35,6 +35,17 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
     private static final String INTEGER_TYPE = " INTEGER ";
     private static final String COMMA_SEP = ",";
 
+    /**
+     * NOTE: Modification on this sort list values should only be done with corresponding modification in
+     *  order of items in 'sort_options' array in strings.xml
+     */
+    public static final int SORT_PURCHASE_DATE = 0;
+    public static final int SORT_NAME = 1;
+    public static final int SORT_CONTACT_GROUP = 2;
+    public static final int SORT_DATE_OF_BIRTH = 3;
+    public static final int SORT_PLACE = 4;
+
+
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + SURVEY_TABLE_NAME + " (" +
                     SURVEY_COLUMN_ID + INTEGER_TYPE + " PRIMARY KEY," +
@@ -49,7 +60,6 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
                     " )";
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + SURVEY_TABLE_NAME;
-
 
     public SurveySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, database_VERSION);
@@ -89,8 +99,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int getNumberOfSurveyEntries()
-    {
+    public int getNumberOfSurveyEntries() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT  * FROM " + SURVEY_TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
@@ -99,23 +108,26 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public void deleteAllSurveyEntries()
-    {
+    public void deleteAllSurveyEntries() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from "+ SURVEY_TABLE_NAME);
+        db.execSQL("delete from " + SURVEY_TABLE_NAME);
     }
 
-    public Cursor getAllSurveyList(){
+    public Cursor getFilteredList(String selection, String[] selectionArgs, String orderBy) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.query(SURVEY_TABLE_NAME, null, null, null, null, null, null);
+        return getFilteredList(null, selection, selectionArgs, orderBy);
+    }
+
+    public Cursor getFilteredList(String[] columns, String selection, String[] selectionArgs, String orderBy) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.query(SURVEY_TABLE_NAME, columns, selection, selectionArgs, null, null, orderBy);
     }
 
     public Survey getSurvey(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(SURVEY_TABLE_NAME, null, " _id = ?", new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = db.query(SURVEY_TABLE_NAME, null, " _id = ?", new String[]{String.valueOf(id)}, null, null, null, null);
         Log.d("DBHelper", "getSurvey with id = " + id + " returned a cursor with length = " + cursor.getCount());
-        if (cursor != null)
-        {
+        if (cursor != null) {
             cursor.moveToFirst();
 
             /** TODO: Finalize on when to set the date time formatting. If at the time of display,
