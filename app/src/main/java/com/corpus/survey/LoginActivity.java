@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private boolean isRegistrationHelpShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        final TextView mRegisterHelpButton = (TextView) findViewById(R.id.register_help_button);
+        final TextView mRegisterHelpMessage = (TextView) findViewById(R.id.register_help_message);
+        mRegisterHelpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isRegistrationHelpShown)
+                {
+                    mRegisterHelpButton.setText(getString(R.string.registration_help));
+                    mRegisterHelpMessage.setVisibility(View.GONE);
+                    isRegistrationHelpShown = false;
+                }
+                else
+                {
+                    mRegisterHelpButton.setText(getString(R.string.registration_help_hide));
+                    mRegisterHelpMessage.setVisibility(View.VISIBLE);
+//                    mRegisterHelpMessage.setText(getString(R.string.registration_help_message));
+                    isRegistrationHelpShown = true;
+                }
+            }
+        });
+
+
     }
 
     private void populateAutoComplete() {

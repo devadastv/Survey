@@ -75,9 +75,31 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/register_help_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/registration_help"
+                android:gravity="center"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/register_help_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="#555555"
+                android:paddingTop="5dp"
+                android:visibility="gone"
+                android:text="@string/registration_help_message"
+                android:gravity="center" />
+
+            <TextView
                 android:id="@+id/login_error_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:textColor="#881111"
                 android:paddingTop="5dp"
                 android:gravity="center" />

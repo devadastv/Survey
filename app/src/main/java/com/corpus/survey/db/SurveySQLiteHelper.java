@@ -114,7 +114,6 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getFilteredList(String selection, String[] selectionArgs, String orderBy) {
-        SQLiteDatabase db = this.getReadableDatabase();
         return getFilteredList(null, selection, selectionArgs, orderBy);
     }
 
@@ -131,7 +130,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
             /** TODO: Finalize on when to set the date time formatting. If at the time of display,
-             * modify the cursotAdapter accordingly **/
+             * modify the cursorAdapter accordingly **/
             long millis = cursor.getLong(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CREATED_DATE));
             Date addedOn = new Date(millis);
             DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
