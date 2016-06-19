@@ -2,11 +2,14 @@ package com.corpus.survey.usermanagement;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.corpus.survey.R;
+import com.corpus.survey.SettingsActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -144,8 +147,9 @@ public class UserProfileManager {
         return R.mipmap.user_image;
     }
 
-    public String getUserName() {
-        return "Volkswagen Koramangala";
+    public String getUserName(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getString(SettingsActivity.KEY_PREF_SHOP_NAME, "");
     }
 
     public String getUserEmail() {

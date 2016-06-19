@@ -61,7 +61,7 @@ public class SummaryActivity extends AppCompatActivity
     }
 
     private void updateSummaryMessage() {
-        String welcomeText = "Welcome <vendor_Name>! Given below a summary of survey taken on your shop. Total number of surveys done so far: " + dbHelper.getNumberOfSurveyEntries();
+        String welcomeText = "" + UserProfileManager.getInstance().getUserName(this) + "\n\nTotal number of surveys : " + dbHelper.getNumberOfSurveyEntries();
         TextView mSummaryText = (TextView) findViewById(R.id.summary_text);
         mSummaryText.setText(welcomeText);
     }
@@ -71,7 +71,7 @@ public class SummaryActivity extends AppCompatActivity
         mUserImage.setImageResource(UserProfileManager.getInstance().getUserImageId());
 
         TextView mUserName = (TextView) findViewById(R.id.profile_user_name);
-        mUserName.setText(UserProfileManager.getInstance().getUserName());
+        mUserName.setText(UserProfileManager.getInstance().getUserName(this));
 
         TextView mUserEmail = (TextView) findViewById(R.id.profile_user_email);
         mUserEmail.setText(UserProfileManager.getInstance().getUserEmail());
@@ -194,6 +194,7 @@ public class SummaryActivity extends AppCompatActivity
     protected void onResume() {
         Log.d("SummaryActivity", "Inside onResume of SummaryActivity");
         updateSummaryMessage();
+        updateUserInfoInNavigationView();
         super.onResume();
     }
 }
