@@ -39,7 +39,7 @@
                     android:id="@+id/numbers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter mobile numbers"
+                    android:hint="Mobile numbers"
                     android:inputType="numberSigned"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -53,13 +53,37 @@
                 <EditText
                     android:id="@+id/sms_text"
                     android:layout_width="match_parent"
-                    android:layout_height="150sp"
-                    android:hint="Type your sms here"
+                    android:layout_height="wrap_content"
+                    android:hint="Type message"
+                    android:ellipsize="start"
                     android:inputType="textMultiLine"
                     android:maxLines="7"
                     android:singleLine="false">
                     <requestFocus />
                 </EditText>
+                <TextView
+                    android:id="@+id/sms_char_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Characters: "
+                    android:textColor="#aaaaaa"
+                    android:gravity="right" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/select_customer_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Select Customer Group"
+                    android:focusableInTouchMode="false"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
             </android.support.design.widget.TextInputLayout>
 
             <Button

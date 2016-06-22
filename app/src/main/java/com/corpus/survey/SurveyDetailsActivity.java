@@ -69,8 +69,8 @@ public class SurveyDetailsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "TODO: SMS compose screen should be launched now", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "SMS compose screen should be launched now", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
                 Intent sendSMSIntent = new Intent(SurveyDetailsActivity.this, SendSMSActivity.class);
                 Bundle extras = new Bundle();
                 Survey currentSurvey = dbHelper.getSurvey(mViewPager.getCurrentItem() + 1);

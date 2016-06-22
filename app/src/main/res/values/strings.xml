@@ -47,7 +47,7 @@
     <string name="send_sms">Send SMS</string>
     <string name="sort">Sort</string>
     <string name="filter">Filter</string>
-    <string name="title_activity_send_sms">SendSMSActivity</string>
+    <string name="title_activity_send_sms">Send Message</string>
     <string name="title_activity_survey_list">Survey List</string>
     <string name="title_activity_settings">Settings</string>
 

@@ -12,9 +12,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +24,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.corpus.survey.CustomerManager;
 import com.corpus.survey.R;
 import com.corpus.survey.SettingsActivity;
+import com.corpus.survey.SurveyActivity;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -38,6 +42,9 @@ public class SendSMSActivity extends AppCompatActivity {
     public static String SEND_SMS_MULTIPLE_TARGETS = "sendSMSMultipleTagets";
     EditText mTagetNumbers;
     private String smsGatewayPref;
+    private EditText mCustomerGroup;
+    private int selectedCustomerGroupIndex = -1; // TODO: Can be used in future based on pref - to allow user to send messge to single or multiple groups???
+    private boolean[] selectedCustomerGroupIndexArray;
 
 
     @Override
@@ -60,6 +67,69 @@ public class SendSMSActivity extends AppCompatActivity {
 
         mTagetNumbers = (EditText) findViewById(R.id.numbers);
         mTagetNumbers.setText(targetMobileNumber);
+
+        mCustomerGroup = (EditText) findViewById(R.id.select_customer_group);
+        mCustomerGroup.setInputType(InputType.TYPE_NULL);
+        final String[] customerGroupArray = CustomerManager.getInstance().getCustomerGroupArray(SendSMSActivity.this);
+        selectedCustomerGroupIndexArray = new boolean[customerGroupArray.length];
+        mCustomerGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(SendSMSActivity.this);
+                builder.setTitle("Customer Group:");
+                builder.setCancelable(true);
+                AlertDialog dialog = builder.create();
+                dialog.getListView();
+
+
+                builder.setMultiChoiceItems(customerGroupArray, selectedCustomerGroupIndexArray, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        if (isChecked) {
+                            selectedCustomerGroupIndexArray[which] = true;
+                        } else {
+                            selectedCustomerGroupIndexArray[which] = false;
+                        }
+                    }
+                });
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StringBuilder builder = new StringBuilder();
+                        for (int i = 0; i < selectedCustomerGroupIndexArray.length; i++) {
+                            if (selectedCustomerGroupIndexArray[i]) {
+                                String selectedCustomerGroup = CustomerManager.getInstance().getCustomerGroupAtIndex(i, SendSMSActivity.this);
+                                if (null != selectedCustomerGroup) {
+                                    builder.append(", ");
+                                    builder.append(selectedCustomerGroup);
+                                }
+                            }
+                        }
+                        if (builder.length() > 1) {
+                            builder.delete(0, 1);
+                        }
+                        mCustomerGroup.setText(builder.toString());
+                        dialog.dismiss();
+                    }
+                });
+
+//                builder.setSingleChoiceItems(CustomerManager.getInstance().getCustomerGroupArray(SendSMSActivity.this), selectedCustomerGroupIndex, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Log.d("SendSMS", "User selected group: " + which);
+//                        selectedCustomerGroupIndex = which;
+//                        String selectedCustomerGroup = CustomerManager.getInstance().getCustomerGroupAtIndex(which, SendSMSActivity.this);
+//                        if (null != selectedCustomerGroup) {
+//                            mCustomerGroup.setText(selectedCustomerGroup);
+//                        }
+//                        dialog.dismiss();
+//                    }
+//                });
+                builder.show();
+            }
+        });
+
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         smsGatewayPref = sharedPref.getString(SettingsActivity.KEY_PREF_SMS_GATEWAY, "");
         Log.d("SendSMS", "Current SMS gateway pref = " + smsGatewayPref);
