@@ -3,9 +3,10 @@ package com.corpus.survey;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -33,6 +34,8 @@ public class SurveyActivity extends AppCompatActivity {
     private int gender;
     private EditText mDateOfBirth;
     private long dateOfBirthMillis;
+    private int selectedCustomerGroupIndex = -1;
+    private EditText mCustomerGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,33 @@ public class SurveyActivity extends AppCompatActivity {
             public void onClick(View v) {
                 DialogFragment newFragment = new DatePickerFragment();
                 newFragment.show(getSupportFragmentManager(), "datePicker");
+            }
+        });
+
+        mCustomerGroup = (EditText) findViewById(R.id.customer_group);
+        mCustomerGroup.setInputType(InputType.TYPE_NULL);
+        mCustomerGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(SurveyActivity.this);
+                builder.setTitle("Customer Group:");
+                builder.setCancelable(true);
+                AlertDialog dialog = builder.create();
+                dialog.getListView();
+                builder.setSingleChoiceItems(CustomerManager.getInstance().getCustomerGroupArray(SurveyActivity.this), selectedCustomerGroupIndex, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("SurveyList", "User selected " + which);
+                        selectedCustomerGroupIndex = which;
+                        String selectedCustomerGroup = CustomerManager.getInstance().getCustomerGroupAtIndex(which, SurveyActivity.this);
+                        if (null != selectedCustomerGroup) {
+                            mCustomerGroup.setText(selectedCustomerGroup);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
 
@@ -97,20 +127,18 @@ public class SurveyActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
 
-            Survey survey = new Survey(surveyPersonName, mobileNumber, gender, System.currentTimeMillis(), null);
+            Survey survey = new Survey(surveyPersonName, mobileNumber, gender, System.currentTimeMillis(), selectedCustomerGroupIndex);
 
             // Set optional fields
             // Email ID
             EditText mEmail = (EditText) findViewById(R.id.customer_email);
-            if (mEmail.length() > 0)
-            {
+            if (mEmail.length() > 0) {
                 survey.setEmail(mEmail.getText().toString());
             }
 
             // Place
             EditText mSurveyPlace = (EditText) findViewById(R.id.place);
-            if (mSurveyPlace.length() > 0)
-            {
+            if (mSurveyPlace.length() > 0) {
                 survey.setPlace(mSurveyPlace.getText().toString());
             }
 
@@ -162,9 +190,8 @@ public class SurveyActivity extends AppCompatActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker if there is no date already set in DatePicker
             final Calendar c = Calendar.getInstance();
-            SurveyActivity activity = (SurveyActivity)getActivity();
-            if (activity.dateOfBirthMillis >= 1)
-            {
+            SurveyActivity activity = (SurveyActivity) getActivity();
+            if (activity.dateOfBirthMillis >= 1) {
                 c.setTimeInMillis(activity.dateOfBirthMillis);
             }
             int year = c.get(Calendar.YEAR);
@@ -178,7 +205,7 @@ public class SurveyActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int year, int month, int day) {
             Calendar newDate = Calendar.getInstance();
             newDate.set(year, month, day);
-            SurveyActivity activity = (SurveyActivity)getActivity();
+            SurveyActivity activity = (SurveyActivity) getActivity();
             activity.mDateOfBirth.setText(dateFormatter.format(newDate.getTime()));
             activity.dateOfBirthMillis = newDate.getTimeInMillis();
         }

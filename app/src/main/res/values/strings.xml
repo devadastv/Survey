@@ -33,6 +33,7 @@
     <string name="submit">Submit</string>
     <string name="name">Name</string>
     <string name="date_of_birth">Date of Birth</string>
+    <string name="customer_group">Customer Group</string>
     <string name="email">Email ID</string>
     <string name="place">Place</string>
     <string name="comments">Comments</string>

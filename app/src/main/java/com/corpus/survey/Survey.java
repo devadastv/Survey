@@ -14,7 +14,7 @@ public class Survey implements Serializable {
     private String place;
     private long createdDate;
     private long dateOfBirth;
-    private String contactGroup;
+    private int contactGroup;
 
 //    private String[] categoriesInterestedIn; // TODO: Later after discussion
 
@@ -24,8 +24,7 @@ public class Survey implements Serializable {
     public static final int GENDER_OTHER = 3;
 
     // Constructor with mandatory fields
-    public Survey (String userName, String phoneNumber, int gender, long createdDate, String contactGroup)
-    {
+    public Survey(String userName, String phoneNumber, int gender, long createdDate, int contactGroup) {
         this.userName = userName;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
@@ -50,8 +49,7 @@ public class Survey implements Serializable {
     }
 
     public String getGenderText() {
-        switch (gender)
-        {
+        switch (gender) {
             case GENDER_MALE:
                 return "Male";
             case GENDER_FEMALE:

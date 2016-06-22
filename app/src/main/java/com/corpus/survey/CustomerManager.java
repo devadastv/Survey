@@ -1,9 +1,11 @@
 package com.corpus.survey;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,21 +26,38 @@ public class CustomerManager {
         return instance;
     }
 
-    public String[] getCurrentCustomerGroupArray(Context context) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String customerGroupString = sharedPref.getString(SettingsActivity.KEY_PREF_CUSTOMER_GROUP, "");
-        String[] customerGroupArray = customerGroupString.split(CUSTOMER_GROUP_DELIMITER);
-        return customerGroupArray;
+    public String[] getCustomerGroupArray(Context context) {
+        String customerGroupString = getCustomerGroupInPersistence(context);
+        return customerGroupString.split(CUSTOMER_GROUP_DELIMITER);
     }
 
-    public boolean addCustomerGroup(String newCustomerGroup, Context context) {
+    public String getCustomerGroupAtIndex(int index, Context context) {
+        String[] customerGroupArray = getCustomerGroupArray(context);
+        if (index <= customerGroupArray.length) {
+            return customerGroupArray[index];
+        } else {
+            return null;
+        }
+    }
+
+    public boolean addCustomerGroup(String newCustomerGroup, final Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         String customerGroupString = sharedPref.getString(SettingsActivity.KEY_PREF_CUSTOMER_GROUP, "");
 
         Log.d("CM", "customerGroupString = " + customerGroupString);
         List currentCustomerGroupList = new ArrayList(); //(ArrayList) Arrays.asList(customerGroupString.split(CUSTOMER_GROUP_DELIMITER));
         currentCustomerGroupList.addAll(Arrays.asList(customerGroupString.split(CUSTOMER_GROUP_DELIMITER)));
-        currentCustomerGroupList.add(newCustomerGroup);
+        if (!currentCustomerGroupList.contains(newCustomerGroup)) {
+            currentCustomerGroupList.add(newCustomerGroup);
+        } else {
+            Log.e("CM", "The new customer group to be added already exist there in the list. Ignoring the request.");
+            ((Activity) context).runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(context, "The customer group to be added already exist in the list. Ignoring the request!", Toast.LENGTH_LONG).show();
+                }
+            });
+            return false;
+        }
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < currentCustomerGroupList.size(); i++) {
@@ -56,9 +75,7 @@ public class CustomerManager {
     public boolean removeCustomerGroup(String customerGroupToRemove, Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         String customerGroupString = sharedPref.getString(SettingsActivity.KEY_PREF_CUSTOMER_GROUP, "");
-
-        Log.d("CM", "customerGroupString = " + customerGroupString);
-        List currentCustomerGroupList = new ArrayList(); //(ArrayList) Arrays.asList(customerGroupString.split(CUSTOMER_GROUP_DELIMITER));
+        List currentCustomerGroupList = new ArrayList();
         currentCustomerGroupList.addAll(Arrays.asList(customerGroupString.split(CUSTOMER_GROUP_DELIMITER)));
         if (currentCustomerGroupList.contains(customerGroupToRemove)) {
             currentCustomerGroupList.remove(customerGroupToRemove);
@@ -77,4 +94,10 @@ public class CustomerManager {
         return result;
     }
 
+    private String getCustomerGroupInPersistence(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        String customerGroupString = sharedPref.getString(SettingsActivity.KEY_PREF_CUSTOMER_GROUP, "");
+        Log.d("CM", "customerGroupString = " + customerGroupString);
+        return customerGroupString;
+    }
 }

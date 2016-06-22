@@ -18,7 +18,7 @@ import java.util.Date;
  */
 public class SurveySQLiteHelper extends SQLiteOpenHelper {
 
-    private static final int database_VERSION = 3;
+    private static final int database_VERSION = 4;
     public static final String DATABASE_NAME = "SurveyDB";
     public static final String SURVEY_TABLE_NAME = "survey";
     public static final String SURVEY_COLUMN_ID = "_id";
@@ -37,7 +37,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
 
     /**
      * NOTE: Modification on this sort list values should only be done with corresponding modification in
-     *  order of items in 'sort_options' array in strings.xml
+     * order of items in 'sort_options' array in strings.xml
      */
     public static final int SORT_PURCHASE_DATE = 0;
     public static final int SORT_NAME = 1;
@@ -56,7 +56,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
                     SURVEY_COLUMN_PLACE + TEXT_TYPE + COMMA_SEP +
                     SURVEY_COLUMN_CREATED_DATE + INTEGER_TYPE + COMMA_SEP +
                     SURVEY_COLUMN_DATE_OF_BIRTH + INTEGER_TYPE + COMMA_SEP +
-                    SURVEY_COLUMN_CONTACT_GROUP + TEXT_TYPE +
+                    SURVEY_COLUMN_CONTACT_GROUP + INTEGER_TYPE +
                     " )";
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + SURVEY_TABLE_NAME;
@@ -143,7 +143,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
             String place = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_PLACE));
             long createdDate = cursor.getLong(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CREATED_DATE));
             long dateOfbirth = cursor.getLong(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_DATE_OF_BIRTH));
-            String contactGroup = cursor.getString(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CONTACT_GROUP));
+            int contactGroup = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CONTACT_GROUP));
             Survey survey = new Survey(name, phoneNumber, gender, createdDate, contactGroup);
             Log.d("DBHelper", "From DB: createdDate = " + createdDate + " dateOfbirth = " + dateOfbirth);
             survey.setEmail(email);
