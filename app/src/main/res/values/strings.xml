@@ -81,4 +81,8 @@
         <item>Date of Birth</item>
         <item>Place</item>
     </string-array>
+
+    <!--Preference- User groups (Hidden) -->
+    <string name="pref_title_customer_group">Customer Group</string>
+    <string name="pref_default_customer_group">Friends_Family_Colleagues</string>
 </resources>

@@ -30,4 +30,14 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_title_sms_gateway" />
 
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_customer_group"
+        android:inputType="textCapWords"
+        android:key="customer_group"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_customer_group" />
+
 </PreferenceScreen>
