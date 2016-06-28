@@ -58,7 +58,7 @@
 
     <!--<string name="pref_title_sms_gateway">Enable social recommendations</string>-->
     <!--<string name="pref_description_sms_gateway">Recommendations for people to contact-->
-        <!--based on your message history-->
+    <!--based on your message history-->
     <!--</string>-->
 
     <string name="pref_title_shop_name">Shop name</string>
@@ -86,4 +86,5 @@
     <!--Preference- User groups (Hidden) -->
     <string name="pref_title_customer_group">Customer Group</string>
     <string name="pref_default_customer_group">Friends_Family_Colleagues</string>
+    <string name="title_activity_predefined_messages">Predefined Messages</string>
 </resources>

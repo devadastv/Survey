@@ -25,8 +25,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.corpus.survey.CustomerManager;
+import com.corpus.survey.PredefinedMessagesActivity;
 import com.corpus.survey.R;
 import com.corpus.survey.SettingsActivity;
+import com.corpus.survey.SummaryActivity;
 import com.corpus.survey.SurveyActivity;
 
 import java.io.BufferedReader;
@@ -113,19 +115,6 @@ public class SendSMSActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
-
-//                builder.setSingleChoiceItems(CustomerManager.getInstance().getCustomerGroupArray(SendSMSActivity.this), selectedCustomerGroupIndex, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Log.d("SendSMS", "User selected group: " + which);
-//                        selectedCustomerGroupIndex = which;
-//                        String selectedCustomerGroup = CustomerManager.getInstance().getCustomerGroupAtIndex(which, SendSMSActivity.this);
-//                        if (null != selectedCustomerGroup) {
-//                            mCustomerGroup.setText(selectedCustomerGroup);
-//                        }
-//                        dialog.dismiss();
-//                    }
-//                });
                 builder.show();
             }
         });
@@ -133,6 +122,16 @@ public class SendSMSActivity extends AppCompatActivity {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         smsGatewayPref = sharedPref.getString(SettingsActivity.KEY_PREF_SMS_GATEWAY, "");
         Log.d("SendSMS", "Current SMS gateway pref = " + smsGatewayPref);
+
+        Button mPredefinedMessagesButton = (Button) findViewById(R.id.predefined_message);
+        mPredefinedMessagesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent contentSummaryIntent = new Intent(SendSMSActivity.this, PredefinedMessagesActivity.class);
+//                contentSummaryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(contentSummaryIntent);
+            }
+        });
 
         Button mSendSMSButton = (Button) findViewById(R.id.send_sms_button);
         mSendSMSButton.setOnClickListener(new View.OnClickListener() {

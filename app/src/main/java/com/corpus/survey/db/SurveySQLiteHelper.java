@@ -31,6 +31,10 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
     public static final String SURVEY_COLUMN_DATE_OF_BIRTH = "date_of_birth";
     public static final String SURVEY_COLUMN_CONTACT_GROUP = "contact_group";
 
+    public static final String PREDEFINED_MESSAGE_TABLE_NAME = "PredefinedMessages";
+    public static final String PREDEFINED_MESSAGE_COLUMN_ID = "_id";
+    public static final String PREDEFINED_MESSAGE_COLUMN_MESSAGE = "message";
+
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER ";
     private static final String COMMA_SEP = ",";
@@ -46,7 +50,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
     public static final int SORT_PLACE = 4;
 
 
-    private static final String SQL_CREATE_ENTRIES =
+    private static final String SQL_CREATE_ENTRIES_SURVEY =
             "CREATE TABLE " + SURVEY_TABLE_NAME + " (" +
                     SURVEY_COLUMN_ID + INTEGER_TYPE + " PRIMARY KEY," +
                     SURVEY_COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
@@ -59,7 +63,12 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
                     SURVEY_COLUMN_CONTACT_GROUP + INTEGER_TYPE +
                     " )";
 
-    private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + SURVEY_TABLE_NAME;
+    private static final String SQL_CREATE_ENTRIES_PREDEFINED_MESSAGES =
+            "CREATE TABLE " + PREDEFINED_MESSAGE_TABLE_NAME + " (" +
+                    PREDEFINED_MESSAGE_COLUMN_ID + INTEGER_TYPE + " PRIMARY KEY," +
+                    PREDEFINED_MESSAGE_COLUMN_MESSAGE + TEXT_TYPE +
+                    " )";
+
 
     public SurveySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, database_VERSION);
@@ -68,8 +77,9 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("DBHandler", "Creating DB with command \n" + SQL_CREATE_ENTRIES);
-        db.execSQL(SQL_CREATE_ENTRIES);
+        Log.d("DBHandler", "Creating DB with command \n" + SQL_CREATE_ENTRIES_SURVEY);
+        db.execSQL(SQL_CREATE_ENTRIES_SURVEY);
+        db.execSQL(SQL_CREATE_ENTRIES_PREDEFINED_MESSAGES);
     }
 
     @Override
@@ -77,6 +87,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         Log.w("DBHandler", "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + SURVEY_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + PREDEFINED_MESSAGE_TABLE_NAME);
         onCreate(db);
     }
 
@@ -153,5 +164,35 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
             return survey;
         }
         return null;
+    }
+
+    public void createPredefinedMessage(String message) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PREDEFINED_MESSAGE_COLUMN_MESSAGE, message);
+        db.insert(PREDEFINED_MESSAGE_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    public int getNumberOfPredefinedMessages() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT  * FROM " + PREDEFINED_MESSAGE_TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+
+    public void deleteAllPredefinedMessages() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + PREDEFINED_MESSAGE_TABLE_NAME);
+    }
+
+
+    public Cursor getAllPredefinedMessagesCursor() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT  * FROM " + PREDEFINED_MESSAGE_TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        return cursor;
     }
 }
