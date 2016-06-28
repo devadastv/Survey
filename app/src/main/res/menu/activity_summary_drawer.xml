@@ -24,7 +24,7 @@
         android:checkableBehavior="single">
         <item
             android:title="Administration"
-            android:visible="false">
+            android:visible="true">
             <menu>
                 <item
                     android:id="@+id/survey_list"

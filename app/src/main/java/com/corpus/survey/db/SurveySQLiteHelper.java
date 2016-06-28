@@ -195,4 +195,18 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
+
+    public String getPredefinedMessage(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(PREDEFINED_MESSAGE_TABLE_NAME, null, " _id = ?", new String[]{String.valueOf(id)}, null, null, null, null);
+        Log.d("DBHelper", "getPredefinedMessage with id = " + id + " returned a cursor with length = " + cursor.getCount());
+        if (cursor != null) {
+            cursor.moveToFirst();
+            String message = cursor.getString(cursor.getColumnIndexOrThrow(PREDEFINED_MESSAGE_COLUMN_MESSAGE));
+            Log.d("DBHelper", "From DB: message = " + message);
+            cursor.close();
+            return message;
+        }
+        return null;
+    }
 }

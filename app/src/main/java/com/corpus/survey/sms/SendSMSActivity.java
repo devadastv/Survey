@@ -30,6 +30,7 @@ import com.corpus.survey.R;
 import com.corpus.survey.SettingsActivity;
 import com.corpus.survey.SummaryActivity;
 import com.corpus.survey.SurveyActivity;
+import com.corpus.survey.db.SurveySQLiteHelper;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -42,11 +43,14 @@ public class SendSMSActivity extends AppCompatActivity {
 
     public static String SEND_SMS_SINGLE_TARGET = "sendSMSSingleTaget";
     public static String SEND_SMS_MULTIPLE_TARGETS = "sendSMSMultipleTagets";
+
+    private SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
     EditText mTagetNumbers;
     private String smsGatewayPref;
     private EditText mCustomerGroup;
     private int selectedCustomerGroupIndex = -1; // TODO: Can be used in future based on pref - to allow user to send messge to single or multiple groups???
     private boolean[] selectedCustomerGroupIndexArray;
+    private EditText mMessageText;
 
 
     @Override
@@ -69,6 +73,8 @@ public class SendSMSActivity extends AppCompatActivity {
 
         mTagetNumbers = (EditText) findViewById(R.id.numbers);
         mTagetNumbers.setText(targetMobileNumber);
+
+        mMessageText = (EditText) findViewById(R.id.sms_text);
 
         mCustomerGroup = (EditText) findViewById(R.id.select_customer_group);
         mCustomerGroup.setInputType(InputType.TYPE_NULL);
@@ -129,7 +135,7 @@ public class SendSMSActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent contentSummaryIntent = new Intent(SendSMSActivity.this, PredefinedMessagesActivity.class);
 //                contentSummaryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(contentSummaryIntent);
+                startActivityForResult(contentSummaryIntent, PredefinedMessagesActivity.REQUEST_CODE_PICK_MESSAGE);
             }
         });
 
@@ -169,5 +175,19 @@ public class SendSMSActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PredefinedMessagesActivity.REQUEST_CODE_PICK_MESSAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                int result = data.getIntExtra("messageIndex", -1);
+//                Toast.makeText(this, "result = " + result, Toast.LENGTH_SHORT).show();
+                if (result != -1) {
+                    String selectedMessage = dbHelper.getPredefinedMessage(result);
+                    mMessageText.setText(selectedMessage);
+                }
+            }
+        }
     }
 }

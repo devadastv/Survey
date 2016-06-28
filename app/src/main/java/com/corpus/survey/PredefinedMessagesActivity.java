@@ -1,6 +1,8 @@
 package com.corpus.survey;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 import com.corpus.survey.db.SurveySQLiteHelper;
 
 public class PredefinedMessagesActivity extends AppCompatActivity {
+
+    public static final int REQUEST_CODE_PICK_MESSAGE = 1;
 
     private SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
     private Cursor currentFilteredCursor;
@@ -79,11 +83,12 @@ public class PredefinedMessagesActivity extends AppCompatActivity {
         mMessageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent contentDetailsIntent = new Intent(SurveyListActivity.this, SurveyDetailsActivity.class);
-//                Bundle extras = new Bundle();
-//                extras.putInt(SURVEY_ITEM_INDEX, position);
-//                contentDetailsIntent.putExtras(extras);
-//                startActivity(contentDetailsIntent);
+                if (null != getCallingActivity()) {
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("messageIndex", position + 1);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                }
             }
         });
     }
@@ -91,5 +96,13 @@ public class PredefinedMessagesActivity extends AppCompatActivity {
     private void updateMessageList() {
         currentFilteredCursor = dbHelper.getAllPredefinedMessagesCursor();
         mAdapter.changeCursor(currentFilteredCursor);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != currentFilteredCursor && !currentFilteredCursor.isClosed()) {
+            currentFilteredCursor.close();
+        }
     }
 }
