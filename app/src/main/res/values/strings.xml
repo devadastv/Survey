@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Survey</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
     <!-- Strings related to login -->
     <string name="not_connected_warning_title">Warning</string>
@@ -87,4 +89,7 @@
     <string name="pref_title_customer_group">Customer Group</string>
     <string name="pref_default_customer_group">Friends_Family_Colleagues</string>
     <string name="title_activity_predefined_messages">Predefined Messages</string>
+
+    <string name="new_predefined_message">New Predefined Message</string>
+    <string name="predefined_message_enter">Enter your Predefined Message \nhere</string>
 </resources>

@@ -1,14 +1,19 @@
 package com.corpus.survey;
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.corpus.survey.db.SurveySQLiteHelper;
 
@@ -29,11 +34,38 @@ public class PredefinedMessagesActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbHelper.createPredefinedMessage("Sample message. This will work as a teal aetlkj agafgldkgj dfgdlgk dfgdfgsdfg sdfg dfg dfgsfgdfgfdgd fgdfgdfg dfg 12345");
+                AlertDialog.Builder builder = new AlertDialog.Builder(getSupportActionBar().getThemedContext());
+                LayoutInflater inflater = PredefinedMessagesActivity.this.getLayoutInflater();
+                final View rootView = inflater.inflate(R.layout.dialog_new_predefined_message, null);
+                builder.setView(rootView).
+                        setTitle(R.string.new_predefined_message).
+                        setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                TextView mNewPredefinedMessage = (TextView) rootView.findViewById(R.id.new_predefined_message);
+                                String newPredefinedMessage = mNewPredefinedMessage.getText().toString();
+                                if (null != newPredefinedMessage && newPredefinedMessage.trim().length() != 0) {
+                                    dbHelper.createPredefinedMessage(newPredefinedMessage);
+                                    updateMessageList();
+                                } else {
+                                    PredefinedMessagesActivity.this.runOnUiThread(new Runnable() {
+                                        public void run() {
+                                            Toast.makeText(PredefinedMessagesActivity.this, "The message is empty and is ignored !", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
-        ListView mSurveyList = (ListView) findViewById(R.id.predefined_messages_list);
+        ListView mMessageList = (ListView) findViewById(R.id.predefined_messages_list);
 
         // For the cursor adapter, specify which columns go into which views
         String[] fromColumns = {SurveySQLiteHelper.PREDEFINED_MESSAGE_COLUMN_MESSAGE};
@@ -43,8 +75,8 @@ public class PredefinedMessagesActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, currentFilteredCursor,
                 fromColumns, toViews, 0);
 
-        mSurveyList.setAdapter(mAdapter);
-        mSurveyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mMessageList.setAdapter(mAdapter);
+        mMessageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Intent contentDetailsIntent = new Intent(SurveyListActivity.this, SurveyDetailsActivity.class);
@@ -56,4 +88,8 @@ public class PredefinedMessagesActivity extends AppCompatActivity {
         });
     }
 
+    private void updateMessageList() {
+        currentFilteredCursor = dbHelper.getAllPredefinedMessagesCursor();
+        mAdapter.changeCursor(currentFilteredCursor);
+    }
 }
