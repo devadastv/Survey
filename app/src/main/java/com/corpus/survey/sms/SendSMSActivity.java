@@ -134,7 +134,6 @@ public class SendSMSActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent contentSummaryIntent = new Intent(SendSMSActivity.this, PredefinedMessagesActivity.class);
-//                contentSummaryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(contentSummaryIntent, PredefinedMessagesActivity.REQUEST_CODE_PICK_MESSAGE);
             }
         });
@@ -182,7 +181,6 @@ public class SendSMSActivity extends AppCompatActivity {
         if (requestCode == PredefinedMessagesActivity.REQUEST_CODE_PICK_MESSAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 int result = data.getIntExtra("messageIndex", -1);
-//                Toast.makeText(this, "result = " + result, Toast.LENGTH_SHORT).show();
                 if (result != -1) {
                     String selectedMessage = dbHelper.getPredefinedMessage(result);
                     mMessageText.setText(selectedMessage);

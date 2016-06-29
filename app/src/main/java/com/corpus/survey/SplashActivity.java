@@ -13,6 +13,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.corpus.survey.usermanagement.SaveSharedPreference;
+import com.corpus.survey.usermanagement.UserProfileManager;
+
 /**
  * Created by devadas.vijayan on 6/20/16.
  */
@@ -41,7 +44,17 @@ public class SplashActivity extends AppCompatActivity {
                 });
                 builder.show();
             } else {
-                Intent intent = new Intent(this, LoginActivity.class);
+                UserProfileManager.getInstance().setCredentialStorage(new SaveSharedPreference(this));
+                Intent intent;
+                if (UserProfileManager.getInstance().isUserAlreadyLoggedIn())
+                {
+                    intent = new Intent(this, SummaryActivity.class);
+                }
+                else
+                {
+                    intent = new Intent(this, LoginActivity.class);
+                }
+
                 startActivity(intent);
                 finish();
             }

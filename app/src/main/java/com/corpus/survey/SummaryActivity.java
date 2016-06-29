@@ -120,6 +120,12 @@ public class SummaryActivity extends AppCompatActivity
         } else if (id == R.id.action_settings) {
             Intent contentSummaryIntent = new Intent(this, SettingsActivity.class);
             startActivity(contentSummaryIntent);
+        } else if (id == R.id.logout) {
+            UserProfileManager.getInstance().resetCredentialsOnUserLogout();
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(loginIntent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

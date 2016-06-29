@@ -53,6 +53,10 @@
             android:id="@+id/about"
             android:icon="@drawable/ic_menu_send"
             android:title="About" />
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_secure"
+            android:title="Logout" />
     </group>
 
 </menu>

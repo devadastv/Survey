@@ -52,6 +52,7 @@ public class UserProfileManager {
 
     private String currentUserEmail;
     private String password;
+    private SaveSharedPreference credentialStorage;
 
     public static UserProfileManager getInstance() {
         if (null == instance) {
@@ -104,6 +105,7 @@ public class UserProfileManager {
             if (authenticationStatus == AUTHENTICATION_SUCCESS) {
                 this.currentUserEmail = email;
                 this.password = password;
+                credentialStorage.saveValidCredentials(email, password);
             }
             return authenticationStatus;
         } finally {
@@ -223,5 +225,17 @@ public class UserProfileManager {
             }
         }
         return buffer.toString();
+    }
+
+    public void setCredentialStorage(SaveSharedPreference credentialStorage) {
+        this.credentialStorage = credentialStorage;
+    }
+
+    public boolean isUserAlreadyLoggedIn() {
+        return credentialStorage.isUserAlreadyLoggedIn();
+    }
+
+    public void resetCredentialsOnUserLogout() {
+        credentialStorage.resetCredentialsOnUserLogout();
     }
 }
