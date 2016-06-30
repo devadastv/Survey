@@ -3,11 +3,14 @@ package com.corpus.sirentext.usermanagement;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * Created by devadas.vijayan on 6/29/16.
  */
 public class SaveSharedPreference {
+    private static final String TAG = "LoginSavePref";
+
     private static final String PREF_KEY_USER_NAME = "username";
     private static final String PREF_KEY_PASSWORD = "password";
     private static final String PREF_KEY_LOGIN_STATUS = "login_status";
@@ -27,12 +30,14 @@ public class SaveSharedPreference {
         this.edit.putString(PREF_KEY_USER_NAME, userName);
         this.edit.putString(PREF_KEY_PASSWORD, password);
         this.edit.putString(PREF_KEY_LOGIN_STATUS, PREF_VALUE_LOGIN_VALID);
+        Log.d(TAG, "Updating the login status to persistence");
         this.edit.apply();
     }
 
     boolean isUserAlreadyLoggedIn() {
         String loginStatus = shared.getString(PREF_KEY_LOGIN_STATUS, "");
-        return loginStatus == PREF_VALUE_LOGIN_VALID;
+        Log.d(TAG, "loginStatus from preference = " + loginStatus);
+        return loginStatus.equals(PREF_VALUE_LOGIN_VALID);
     }
 
     void resetCredentialsOnUserLogout() {
