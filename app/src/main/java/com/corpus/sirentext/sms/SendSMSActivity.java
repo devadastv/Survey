@@ -70,11 +70,11 @@ public class SendSMSActivity extends AppCompatActivity {
         mMessageText = (EditText) findViewById(R.id.sms_text);
         mMessageText.addTextChangedListener(mTextEditorWatcher);
 
-        if (targetMobileNumber.trim().equals("")) {
-            mTagetNumbers.requestFocus();
-        } else {
-            mMessageText.requestFocus();
-        }
+//        if (targetMobileNumber.trim().equals("")) {
+//            mTagetNumbers.requestFocus();
+//        } else {
+//            mMessageText.requestFocus();
+//        }
         mMessageCharCount = (TextView) findViewById(R.id.sms_char_count);
         updateCharacterCount(0);
 
