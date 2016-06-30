@@ -16,12 +16,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.corpus.survey.CustomerManager;
@@ -51,7 +54,8 @@ public class SendSMSActivity extends AppCompatActivity {
     private int selectedCustomerGroupIndex = -1; // TODO: Can be used in future based on pref - to allow user to send messge to single or multiple groups???
     private boolean[] selectedCustomerGroupIndexArray;
     private EditText mMessageText;
-
+    private TextView mMessageCharCount;
+    private String characterCountPrefix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,11 @@ public class SendSMSActivity extends AppCompatActivity {
         mTagetNumbers.setText(targetMobileNumber);
 
         mMessageText = (EditText) findViewById(R.id.sms_text);
+        mMessageText.addTextChangedListener(mTextEditorWatcher);
+
+        mMessageCharCount = (TextView) findViewById(R.id.sms_char_count);
+        characterCountPrefix = getResources().getString(R.string.characters);
+
 
         mCustomerGroup = (EditText) findViewById(R.id.select_customer_group);
         mCustomerGroup.setInputType(InputType.TYPE_NULL);
@@ -151,8 +160,7 @@ public class SendSMSActivity extends AppCompatActivity {
         String text = mTagetNumbers.getText().toString();
         String[] numbers = text.split(",");
         trimNumbers(numbers);
-        EditText mSMSText = (EditText) findViewById(R.id.sms_text);
-        String message = mSMSText.getText().toString();
+        String message = mMessageText.getText().toString();
         if (isAtLeastOneValidNumber(numbers)) {
             BaseSmsSendingTask smsSendingTask = SmsSendingTaskFactory.getSmsSendingTask(smsGatewayPref, message, this);
             smsSendingTask.execute(numbers);
@@ -188,4 +196,30 @@ public class SendSMSActivity extends AppCompatActivity {
             }
         }
     }
+
+    private final TextWatcher mTextEditorWatcher = new TextWatcher() {
+
+        private final int CHAR_COUNT_PER_SMS = 160;
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            int totalCharCount = s.length();
+            int smsCount = totalCharCount/CHAR_COUNT_PER_SMS + 1;
+            int remainingCharCount = totalCharCount%CHAR_COUNT_PER_SMS;
+
+            StringBuilder builder = new StringBuilder();
+            builder.append(characterCountPrefix);
+            builder.append(remainingCharCount);
+            builder.append("/");
+            builder.append(smsCount);
+            mMessageCharCount.setText(builder.toString());
+        }
+    };
 }

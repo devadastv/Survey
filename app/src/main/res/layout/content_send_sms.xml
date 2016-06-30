@@ -39,7 +39,7 @@
                     android:id="@+id/numbers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Mobile numbers"
+                    android:hint="@string/mobile_numbers"
                     android:inputType="numberSigned"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -54,7 +54,7 @@
                     android:id="@+id/sms_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Type message"
+                    android:hint="@string/type_message"
                     android:ellipsize="start"
                     android:inputType="textMultiLine"
                     android:maxLines="7"
@@ -65,7 +65,7 @@
                     android:id="@+id/sms_char_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Characters: "
+                    android:text="@string/characters"
                     android:textColor="#aaaaaa"
                     android:gravity="right" />
             </android.support.design.widget.TextInputLayout>
@@ -78,7 +78,7 @@
                     android:id="@+id/select_customer_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Customer Group"
+                    android:hint="@string/select_customer_group"
                     android:focusableInTouchMode="false"
                     android:inputType="text"
                     android:maxLines="1"
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
-                    android:text="Predefined Message"
+                    android:text="@string/predefined_message"
                     android:textStyle="bold" />
 
                 <Button
@@ -107,7 +107,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Clear All"
+                    android:text="@string/clear_all"
                     android:layout_weight="1"
                     android:textStyle="bold" />
 
@@ -119,7 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Send SMS"
+                android:text="@string/send_sms"
                 android:textStyle="bold" />
 
         </LinearLayout>
