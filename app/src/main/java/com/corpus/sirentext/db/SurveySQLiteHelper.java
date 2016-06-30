@@ -35,6 +35,10 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
     public static final String PREDEFINED_MESSAGE_COLUMN_ID = "_id";
     public static final String PREDEFINED_MESSAGE_COLUMN_MESSAGE = "message";
 
+    public static final String CUSTOMER_GROUPS_TABLE_NAME = "customer_groups";
+    public static final String CUSTOMER_GROUPS_COLUMN_ID = "_id";
+    public static final String CUSTOMER_GROUPS_COLUMN_NAME = "group_name";
+
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER ";
     private static final String COMMA_SEP = ",";
@@ -69,6 +73,12 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
                     PREDEFINED_MESSAGE_COLUMN_MESSAGE + TEXT_TYPE +
                     " )";
 
+    private static final String SQL_CREATE_ENTRIES_CUSTOMER_GROUPS =
+            "CREATE TABLE " + CUSTOMER_GROUPS_TABLE_NAME + " (" +
+                    CUSTOMER_GROUPS_COLUMN_ID + INTEGER_TYPE + " PRIMARY KEY," +
+                    CUSTOMER_GROUPS_COLUMN_NAME + TEXT_TYPE +
+                    " )";
+
 
     public SurveySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, database_VERSION);
@@ -80,6 +90,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         Log.d("DBHandler", "Creating DB with command \n" + SQL_CREATE_ENTRIES_SURVEY);
         db.execSQL(SQL_CREATE_ENTRIES_SURVEY);
         db.execSQL(SQL_CREATE_ENTRIES_PREDEFINED_MESSAGES);
+        db.execSQL(SQL_CREATE_ENTRIES_CUSTOMER_GROUPS);
     }
 
     @Override
@@ -88,6 +99,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
                 + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + SURVEY_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + PREDEFINED_MESSAGE_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_GROUPS_TABLE_NAME);
         onCreate(db);
     }
 
@@ -208,5 +220,39 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
             return message;
         }
         return null;
+    }
+
+    public void createNewCustomerGroup(String customerGroupName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(CUSTOMER_GROUPS_COLUMN_NAME, customerGroupName);
+        db.insert(CUSTOMER_GROUPS_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    public int getNumberOfCustomerGroups() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT  * FROM " + CUSTOMER_GROUPS_TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+
+    public Cursor getAllCustomerGroupsCursor() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT  * FROM " + CUSTOMER_GROUPS_TABLE_NAME;
+        return db.rawQuery(query, null);
+    }
+
+    public String getCustomerGroup(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(CUSTOMER_GROUPS_TABLE_NAME, null, " _id = ?", new String[]{String.valueOf(id)}, null, null, null, null);
+        Log.d("DBHelper", "getPredefinedMessage with id = " + id + " returned a cursor with length = " + cursor.getCount());
+        cursor.moveToFirst();
+        String customerGroupName = cursor.getString(cursor.getColumnIndexOrThrow(CUSTOMER_GROUPS_TABLE_NAME));
+        Log.d("DBHelper", "From DB: customerGroupName = " + customerGroupName);
+        cursor.close();
+        return customerGroupName;
     }
 }
