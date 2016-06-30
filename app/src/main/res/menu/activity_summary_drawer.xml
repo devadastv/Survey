@@ -7,7 +7,7 @@
         <item
             android:id="@+id/new_survey"
             android:icon="@drawable/ic_menu_camera"
-            android:title="@string/new_survey" />
+            android:title="@string/new_customer" />
         <item
             android:id="@+id/admin_login"
             android:icon="@drawable/ic_menu_manage"

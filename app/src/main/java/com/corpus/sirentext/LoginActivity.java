@@ -296,7 +296,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             TextView mErrorView = (TextView) findViewById(R.id.login_error_message);
             switch (authenticationStatus) {
                 case UserProfileManager.AUTHENTICATION_SUCCESS:
-                    Intent mainActivityIntent = new Intent(LoginActivity.this, SummaryActivity.class);
+                    Intent mainActivityIntent = new Intent(LoginActivity.this, SendSMSActivity.class);
                     mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(mainActivityIntent);
                     finish();

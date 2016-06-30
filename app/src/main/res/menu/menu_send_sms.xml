@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".CustomerDetailsActivity">
+    <item
+        android:id="@+id/new_customer"
+        android:orderInCategory="100"
+        android:title="@string/new_customer" />
+    <item
+        android:id="@+id/customer_list"
+        android:orderInCategory="100"
+        android:title="@string/customer_list" />
+    <item
+        android:id="@+id/clear_all_contacts"
+        android:orderInCategory="100"
+        android:title="@string/clear_all_contacts" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings" />
+    <item
+        android:id="@+id/logout"
+        android:orderInCategory="100"
+        android:title="@string/logout" />
+</menu>

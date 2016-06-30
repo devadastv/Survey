@@ -14,17 +14,23 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.corpus.sirentext.CustomerListActivity;
 import com.corpus.sirentext.CustomerManager;
+import com.corpus.sirentext.LoginActivity;
+import com.corpus.sirentext.NewCustomerActivity;
 import com.corpus.sirentext.PredefinedMessagesActivity;
 import com.corpus.sirentext.R;
 import com.corpus.sirentext.SettingsActivity;
 import com.corpus.sirentext.db.SurveySQLiteHelper;
+import com.corpus.sirentext.usermanagement.UserProfileManager;
 
 public class SendSMSActivity extends AppCompatActivity {
 
@@ -64,12 +70,9 @@ public class SendSMSActivity extends AppCompatActivity {
         mMessageText = (EditText) findViewById(R.id.sms_text);
         mMessageText.addTextChangedListener(mTextEditorWatcher);
 
-        if (targetMobileNumber.trim().equals(""))
-        {
+        if (targetMobileNumber.trim().equals("")) {
             mTagetNumbers.requestFocus();
-        }
-        else
-        {
+        } else {
             mMessageText.requestFocus();
         }
         mMessageCharCount = (TextView) findViewById(R.id.sms_char_count);
@@ -156,6 +159,62 @@ public class SendSMSActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_send_sms, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.new_customer) {
+            addNewCustomer();
+            return true;
+        } else if (id == R.id.customer_list) {
+            launchCustomerList();
+        } else if (id == R.id.clear_all_contacts) {
+            displayClearCustomerListConfirmationDialog();
+        } else if (id == R.id.action_settings) {
+            Intent contentSummaryIntent = new Intent(this, SettingsActivity.class);
+            startActivity(contentSummaryIntent);
+        } else if (id == R.id.logout) {
+            UserProfileManager.getInstance().resetCredentialsOnUserLogout();
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(loginIntent);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void addNewCustomer() {
+        Intent contentSummaryIntent = new Intent(this, NewCustomerActivity.class);
+        startActivity(contentSummaryIntent);
+    }
+
+    private void launchCustomerList() {
+        Intent intent = new Intent(this, CustomerListActivity.class);
+        startActivity(intent);
+    }
+
+    private void displayClearCustomerListConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Warning: Deleting all customer contacts")
+                .setMessage("Are you sure you want to delete all customer contacts created so far? This action can not be undone!")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbHelper.deleteAllSurveyEntries();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
     private void startSendMessages() {
         String text = mTagetNumbers.getText().toString();
         String[] numbers = text.split(",");
@@ -200,11 +259,10 @@ public class SendSMSActivity extends AppCompatActivity {
         }
     }
 
-    private void updateCharacterCount(int totalCharCount)
-    {
+    private void updateCharacterCount(int totalCharCount) {
         final int CHAR_COUNT_PER_SMS = 160;
-        int smsCount = totalCharCount/CHAR_COUNT_PER_SMS + 1;
-        int remainingCharCount = totalCharCount%CHAR_COUNT_PER_SMS;
+        int smsCount = totalCharCount / CHAR_COUNT_PER_SMS + 1;
+        int remainingCharCount = totalCharCount % CHAR_COUNT_PER_SMS;
 
         StringBuilder builder = new StringBuilder();
         builder.append(getResources().getString(R.string.characters));

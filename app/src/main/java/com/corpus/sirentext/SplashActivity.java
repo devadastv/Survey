@@ -46,7 +46,7 @@ public class SplashActivity extends AppCompatActivity {
                 Intent intent;
                 if (UserProfileManager.getInstance().isUserAlreadyLoggedIn())
                 {
-                    intent = new Intent(this, SummaryActivity.class);
+                    intent = new Intent(this, SendSMSActivity.class);
                 }
                 else
                 {
