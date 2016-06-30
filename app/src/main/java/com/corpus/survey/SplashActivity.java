@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.corpus.survey.sms.SendSMSActivity;
 import com.corpus.survey.usermanagement.SaveSharedPreference;
 import com.corpus.survey.usermanagement.UserProfileManager;
 
@@ -48,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
                 Intent intent;
                 if (UserProfileManager.getInstance().isUserAlreadyLoggedIn())
                 {
-                    intent = new Intent(this, SummaryActivity.class);
+                    intent = new Intent(this, SendSMSActivity.class);
                 }
                 else
                 {

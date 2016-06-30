@@ -47,6 +47,7 @@ public class SendSMSActivity extends AppCompatActivity {
     public static String SEND_SMS_SINGLE_TARGET = "sendSMSSingleTaget";
     public static String SEND_SMS_MULTIPLE_TARGETS = "sendSMSMultipleTagets";
 
+
     private SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
     EditText mTagetNumbers;
     private String smsGatewayPref;
@@ -55,7 +56,6 @@ public class SendSMSActivity extends AppCompatActivity {
     private boolean[] selectedCustomerGroupIndexArray;
     private EditText mMessageText;
     private TextView mMessageCharCount;
-    private String characterCountPrefix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +81,16 @@ public class SendSMSActivity extends AppCompatActivity {
         mMessageText = (EditText) findViewById(R.id.sms_text);
         mMessageText.addTextChangedListener(mTextEditorWatcher);
 
+        if (targetMobileNumber.equals(""))
+        {
+            mTagetNumbers.requestFocus();
+        }
+        else
+        {
+            mMessageText.requestFocus();
+        }
         mMessageCharCount = (TextView) findViewById(R.id.sms_char_count);
-        characterCountPrefix = getResources().getString(R.string.characters);
-
+        updateCharacterCount(0);
 
         mCustomerGroup = (EditText) findViewById(R.id.select_customer_group);
         mCustomerGroup.setInputType(InputType.TYPE_NULL);
@@ -197,9 +204,21 @@ public class SendSMSActivity extends AppCompatActivity {
         }
     }
 
-    private final TextWatcher mTextEditorWatcher = new TextWatcher() {
+    private void updateCharacterCount(int totalCharCount)
+    {
+        final int CHAR_COUNT_PER_SMS = 160;
+        int smsCount = totalCharCount/CHAR_COUNT_PER_SMS + 1;
+        int remainingCharCount = totalCharCount%CHAR_COUNT_PER_SMS;
 
-        private final int CHAR_COUNT_PER_SMS = 160;
+        StringBuilder builder = new StringBuilder();
+        builder.append(getResources().getString(R.string.characters));
+        builder.append(remainingCharCount);
+        builder.append("/");
+        builder.append(smsCount);
+        mMessageCharCount.setText(builder.toString());
+    }
+
+    private final TextWatcher mTextEditorWatcher = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
@@ -210,16 +229,7 @@ public class SendSMSActivity extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            int totalCharCount = s.length();
-            int smsCount = totalCharCount/CHAR_COUNT_PER_SMS + 1;
-            int remainingCharCount = totalCharCount%CHAR_COUNT_PER_SMS;
-
-            StringBuilder builder = new StringBuilder();
-            builder.append(characterCountPrefix);
-            builder.append(remainingCharCount);
-            builder.append("/");
-            builder.append(smsCount);
-            mMessageCharCount.setText(builder.toString());
+            updateCharacterCount(s.length());
         }
     };
 }

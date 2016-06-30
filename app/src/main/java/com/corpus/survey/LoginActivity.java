@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.corpus.survey.sms.SendSMSActivity;
 import com.corpus.survey.usermanagement.UserProfileManager;
 
 import java.io.IOException;
@@ -295,9 +296,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             TextView mErrorView = (TextView) findViewById(R.id.login_error_message);
             switch (authenticationStatus) {
                 case UserProfileManager.AUTHENTICATION_SUCCESS:
-                    Intent contentSummaryIntent = new Intent(LoginActivity.this, SummaryActivity.class);
-                    contentSummaryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(contentSummaryIntent);
+                    Intent mainActivityIntent = new Intent(LoginActivity.this, SendSMSActivity.class);
+                    mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(mainActivityIntent);
                     finish();
                     break;
                 case UserProfileManager.AUTHENTICATION_FAILED:

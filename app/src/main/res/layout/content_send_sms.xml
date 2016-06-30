@@ -59,7 +59,7 @@
                     android:inputType="textMultiLine"
                     android:maxLines="7"
                     android:singleLine="false">
-                    <requestFocus />
+                    <!--<requestFocus />-->
                 </EditText>
                 <TextView
                     android:id="@+id/sms_char_count"
