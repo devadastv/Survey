@@ -69,12 +69,12 @@ public class NewCustomerActivity extends AppCompatActivity {
                 builder.setCancelable(true);
                 AlertDialog dialog = builder.create();
                 dialog.getListView();
-                builder.setSingleChoiceItems(CustomerManager.getInstance().getCustomerGroupArray(NewCustomerActivity.this), selectedCustomerGroupIndex, new DialogInterface.OnClickListener() {
+                builder.setSingleChoiceItems(dbHelper.getCustomerGroupsArray(), selectedCustomerGroupIndex, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d("SurveyList", "User selected " + which);
                         selectedCustomerGroupIndex = which;
-                        String selectedCustomerGroup = CustomerManager.getInstance().getCustomerGroupAtIndex(which, NewCustomerActivity.this);
+                        String selectedCustomerGroup = dbHelper.getCustomerGroup(which + 1);
                         if (null != selectedCustomerGroup) {
                             mCustomerGroup.setText(selectedCustomerGroup);
                         }
@@ -146,7 +146,7 @@ public class NewCustomerActivity extends AppCompatActivity {
             customer.setDateOfBirth(dateOfBirthMillis);
 
             dbHelper.createSurvey(customer);
-            Toast.makeText(this, "This customer is successfully submitted. Thanks!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "This contact is saved.", Toast.LENGTH_SHORT).show();
             finish();
         }
     }

@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.corpus.sirentext.CustomerListActivity;
-import com.corpus.sirentext.CustomerManager;
 import com.corpus.sirentext.LoginActivity;
 import com.corpus.sirentext.NewCustomerActivity;
 import com.corpus.sirentext.PredefinedMessagesActivity;
@@ -70,17 +69,12 @@ public class SendSMSActivity extends AppCompatActivity {
         mMessageText = (EditText) findViewById(R.id.sms_text);
         mMessageText.addTextChangedListener(mTextEditorWatcher);
 
-//        if (targetMobileNumber.trim().equals("")) {
-//            mTagetNumbers.requestFocus();
-//        } else {
-//            mMessageText.requestFocus();
-//        }
         mMessageCharCount = (TextView) findViewById(R.id.sms_char_count);
         updateCharacterCount(0);
 
         mCustomerGroup = (EditText) findViewById(R.id.select_customer_group);
         mCustomerGroup.setInputType(InputType.TYPE_NULL);
-        final String[] customerGroupArray = CustomerManager.getInstance().getCustomerGroupArray(SendSMSActivity.this);
+        final String[] customerGroupArray = dbHelper.getCustomerGroupsArray();
         selectedCustomerGroupIndexArray = new boolean[customerGroupArray.length];
         mCustomerGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +85,6 @@ public class SendSMSActivity extends AppCompatActivity {
                 builder.setCancelable(true);
                 AlertDialog dialog = builder.create();
                 dialog.getListView();
-
 
                 builder.setMultiChoiceItems(customerGroupArray, selectedCustomerGroupIndexArray, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
@@ -109,7 +102,7 @@ public class SendSMSActivity extends AppCompatActivity {
                         StringBuilder builder = new StringBuilder();
                         for (int i = 0; i < selectedCustomerGroupIndexArray.length; i++) {
                             if (selectedCustomerGroupIndexArray[i]) {
-                                String selectedCustomerGroup = CustomerManager.getInstance().getCustomerGroupAtIndex(i, SendSMSActivity.this);
+                                String selectedCustomerGroup = dbHelper.getCustomerGroup(i + 1);
                                 if (null != selectedCustomerGroup) {
                                     builder.append(", ");
                                     builder.append(selectedCustomerGroup);
@@ -172,7 +165,7 @@ public class SendSMSActivity extends AppCompatActivity {
         if (id == R.id.new_customer) {
             addNewCustomer();
             return true;
-        } else if (id == R.id.customer_list) {
+        }else if (id == R.id.customer_list) {
             launchCustomerList();
         } else if (id == R.id.clear_all_contacts) {
             displayClearCustomerListConfirmationDialog();

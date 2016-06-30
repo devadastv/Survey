@@ -239,10 +239,20 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public Cursor getAllCustomerGroupsCursor() {
+    public String[] getCustomerGroupsArray() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT  * FROM " + CUSTOMER_GROUPS_TABLE_NAME;
-        return db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, null);
+        String[] customerGroups = new String[cursor.getCount()];
+        int i = 0;
+        try {
+            while (cursor.moveToNext()) {
+                customerGroups[i++] = cursor.getString(cursor.getColumnIndexOrThrow(CUSTOMER_GROUPS_COLUMN_NAME));
+            }
+        } finally {
+            cursor.close();
+        }
+        return customerGroups;
     }
 
     public String getCustomerGroup(int id) {
@@ -250,7 +260,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(CUSTOMER_GROUPS_TABLE_NAME, null, " _id = ?", new String[]{String.valueOf(id)}, null, null, null, null);
         Log.d("DBHelper", "getPredefinedMessage with id = " + id + " returned a cursor with length = " + cursor.getCount());
         cursor.moveToFirst();
-        String customerGroupName = cursor.getString(cursor.getColumnIndexOrThrow(CUSTOMER_GROUPS_TABLE_NAME));
+        String customerGroupName = cursor.getString(cursor.getColumnIndexOrThrow(CUSTOMER_GROUPS_COLUMN_NAME));
         Log.d("DBHelper", "From DB: customerGroupName = " + customerGroupName);
         cursor.close();
         return customerGroupName;
