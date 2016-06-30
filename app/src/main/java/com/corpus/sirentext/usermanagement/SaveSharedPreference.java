@@ -1,4 +1,4 @@
-package com.corpus.survey.usermanagement;
+package com.corpus.sirentext.usermanagement;
 
 import android.content.Context;
 import android.content.SharedPreferences;

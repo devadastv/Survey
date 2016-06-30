@@ -1,4 +1,4 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

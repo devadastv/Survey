@@ -1,4 +1,4 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -26,8 +26,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.corpus.survey.sms.SendSMSActivity;
-import com.corpus.survey.usermanagement.UserProfileManager;
+import com.corpus.sirentext.sms.SendSMSActivity;
+import com.corpus.sirentext.usermanagement.UserProfileManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -296,7 +296,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             TextView mErrorView = (TextView) findViewById(R.id.login_error_message);
             switch (authenticationStatus) {
                 case UserProfileManager.AUTHENTICATION_SUCCESS:
-                    Intent mainActivityIntent = new Intent(LoginActivity.this, SendSMSActivity.class);
+                    Intent mainActivityIntent = new Intent(LoginActivity.this, SummaryActivity.class);
                     mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(mainActivityIntent);
                     finish();

@@ -1,21 +1,14 @@
-package com.corpus.survey.sms;
+package com.corpus.sirentext.sms;
 
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -27,20 +20,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.corpus.survey.CustomerManager;
-import com.corpus.survey.PredefinedMessagesActivity;
-import com.corpus.survey.R;
-import com.corpus.survey.SettingsActivity;
-import com.corpus.survey.SummaryActivity;
-import com.corpus.survey.SurveyActivity;
-import com.corpus.survey.db.SurveySQLiteHelper;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.ArrayList;
+import com.corpus.sirentext.CustomerManager;
+import com.corpus.sirentext.PredefinedMessagesActivity;
+import com.corpus.sirentext.R;
+import com.corpus.sirentext.SettingsActivity;
+import com.corpus.sirentext.db.SurveySQLiteHelper;
 
 public class SendSMSActivity extends AppCompatActivity {
 

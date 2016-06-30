@@ -1,4 +1,4 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,8 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.corpus.survey.db.SurveySQLiteHelper;
-import com.corpus.survey.usermanagement.UserProfileManager;
+import com.corpus.sirentext.db.SurveySQLiteHelper;
+import com.corpus.sirentext.usermanagement.UserProfileManager;
 
 public class SummaryActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -171,12 +171,12 @@ public class SummaryActivity extends AppCompatActivity
     }
 
     private void launchSurveyList() {
-        Intent intent = new Intent(SummaryActivity.this, SurveyListActivity.class);
+        Intent intent = new Intent(SummaryActivity.this, CustomerListActivity.class);
         startActivity(intent);
     }
 
     private void startSurvey() {
-        Intent contentSummaryIntent = new Intent(this, SurveyActivity.class);
+        Intent contentSummaryIntent = new Intent(this, NewCustomerActivity.class);
         startActivity(contentSummaryIntent);
     }
 

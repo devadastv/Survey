@@ -1,4 +1,4 @@
-package com.corpus.survey.sms;
+package com.corpus.sirentext.sms;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.corpus.survey.R;
+import com.corpus.sirentext.R;
 
 /**
  * Created by devadas.vijayan on 6/13/16.

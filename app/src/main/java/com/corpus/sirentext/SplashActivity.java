@@ -1,4 +1,4 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,13 +9,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
 
-import com.corpus.survey.sms.SendSMSActivity;
-import com.corpus.survey.usermanagement.SaveSharedPreference;
-import com.corpus.survey.usermanagement.UserProfileManager;
+import com.corpus.sirentext.sms.SendSMSActivity;
+import com.corpus.sirentext.usermanagement.SaveSharedPreference;
+import com.corpus.sirentext.usermanagement.UserProfileManager;
 
 /**
  * Created by devadas.vijayan on 6/20/16.
@@ -49,7 +46,7 @@ public class SplashActivity extends AppCompatActivity {
                 Intent intent;
                 if (UserProfileManager.getInstance().isUserAlreadyLoggedIn())
                 {
-                    intent = new Intent(this, SendSMSActivity.class);
+                    intent = new Intent(this, SummaryActivity.class);
                 }
                 else
                 {

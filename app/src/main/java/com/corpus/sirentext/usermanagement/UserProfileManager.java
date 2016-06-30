@@ -1,4 +1,4 @@
-package com.corpus.survey.usermanagement;
+package com.corpus.sirentext.usermanagement;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,10 +8,9 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.corpus.survey.R;
-import com.corpus.survey.SettingsActivity;
+import com.corpus.sirentext.R;
+import com.corpus.sirentext.SettingsActivity;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,7 +18,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 
 /**

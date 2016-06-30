@@ -1,9 +1,9 @@
-package com.corpus.survey.sms;
+package com.corpus.sirentext.sms;
 
 import android.util.Log;
 import android.widget.Toast;
 
-import com.corpus.survey.SettingsActivity;
+import com.corpus.sirentext.SettingsActivity;
 
 /**
  * Created by devadas.vijayan on 6/13/16.

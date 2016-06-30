@@ -1,4 +1,4 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

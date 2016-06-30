@@ -1,4 +1,4 @@
-package com.corpus.survey.sms;
+package com.corpus.sirentext.sms;
 
 import android.app.Activity;
 import android.app.PendingIntent;

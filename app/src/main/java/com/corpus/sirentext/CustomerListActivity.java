@@ -1,10 +1,9 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,10 +17,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.corpus.survey.db.SurveySQLiteHelper;
-import com.corpus.survey.sms.SendSMSActivity;
+import com.corpus.sirentext.db.SurveySQLiteHelper;
+import com.corpus.sirentext.sms.SendSMSActivity;
 
-public class SurveyListActivity extends AppCompatActivity {
+public class CustomerListActivity extends AppCompatActivity {
 
     SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
 
@@ -63,7 +62,7 @@ public class SurveyListActivity extends AppCompatActivity {
         mSurveyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent contentDetailsIntent = new Intent(SurveyListActivity.this, SurveyDetailsActivity.class);
+                Intent contentDetailsIntent = new Intent(CustomerListActivity.this, CustomerDetailsActivity.class);
                 Bundle extras = new Bundle();
                 extras.putInt(SURVEY_ITEM_INDEX, position);
                 contentDetailsIntent.putExtras(extras);
@@ -102,7 +101,7 @@ public class SurveyListActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(formattedTargetMobileNumbers)) {
                 Toast.makeText(this, "The SMS can be sent only with a non-empty list", Toast.LENGTH_SHORT).show();
             } else {
-                Intent sendSMSIntent = new Intent(SurveyListActivity.this, SendSMSActivity.class);
+                Intent sendSMSIntent = new Intent(CustomerListActivity.this, SendSMSActivity.class);
                 Bundle extras = new Bundle();
                 extras.putString(SendSMSActivity.SEND_SMS_MULTIPLE_TARGETS, formattedTargetMobileNumbers);
                 sendSMSIntent.putExtras(extras);

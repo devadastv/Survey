@@ -1,11 +1,11 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import java.io.Serializable;
 
 /**
  * Created by devadas.vijayan on 5/30/16.
  */
-public class Survey implements Serializable {
+public class Customer implements Serializable {
 
     private String userName;
     private String phoneNumber;
@@ -24,7 +24,7 @@ public class Survey implements Serializable {
     public static final int GENDER_OTHER = 3;
 
     // Constructor with mandatory fields
-    public Survey(String userName, String phoneNumber, int gender, long createdDate, int contactGroup) {
+    public Customer(String userName, String phoneNumber, int gender, long createdDate, int contactGroup) {
         this.userName = userName;
         this.phoneNumber = phoneNumber;
         this.gender = gender;

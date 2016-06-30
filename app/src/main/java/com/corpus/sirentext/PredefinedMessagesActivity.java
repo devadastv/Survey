@@ -1,4 +1,4 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -17,7 +17,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.corpus.survey.db.SurveySQLiteHelper;
+import com.corpus.sirentext.db.SurveySQLiteHelper;
 
 public class PredefinedMessagesActivity extends AppCompatActivity {
 

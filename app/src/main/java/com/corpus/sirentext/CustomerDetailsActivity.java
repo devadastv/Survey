@@ -1,9 +1,8 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,15 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.corpus.survey.db.SurveySQLiteHelper;
-import com.corpus.survey.sms.SendSMSActivity;
+import com.corpus.sirentext.db.SurveySQLiteHelper;
+import com.corpus.sirentext.sms.SendSMSActivity;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class SurveyDetailsActivity extends AppCompatActivity {
+public class CustomerDetailsActivity extends AppCompatActivity {
 
     SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
     /**
@@ -61,7 +59,7 @@ public class SurveyDetailsActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         int surveyItemIndex = 0;
         if (extras != null) {
-            surveyItemIndex = extras.getInt(SurveyListActivity.SURVEY_ITEM_INDEX);
+            surveyItemIndex = extras.getInt(CustomerListActivity.SURVEY_ITEM_INDEX);
         }
         mViewPager.setCurrentItem(surveyItemIndex);
 
@@ -71,10 +69,10 @@ public class SurveyDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Snackbar.make(view, "SMS compose screen should be launched now", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                Intent sendSMSIntent = new Intent(SurveyDetailsActivity.this, SendSMSActivity.class);
+                Intent sendSMSIntent = new Intent(CustomerDetailsActivity.this, SendSMSActivity.class);
                 Bundle extras = new Bundle();
-                Survey currentSurvey = dbHelper.getSurvey(mViewPager.getCurrentItem() + 1);
-                extras.putString(SendSMSActivity.SEND_SMS_SINGLE_TARGET, currentSurvey.getPhoneNumber());
+                Customer currentCustomer = dbHelper.getSurvey(mViewPager.getCurrentItem() + 1);
+                extras.putString(SendSMSActivity.SEND_SMS_SINGLE_TARGET, currentCustomer.getPhoneNumber());
                 sendSMSIntent.putExtras(extras);
                 startActivity(sendSMSIntent);
             }
@@ -125,12 +123,12 @@ public class SurveyDetailsActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber, int totalCount, Survey survey) {
+        public static PlaceholderFragment newInstance(int sectionNumber, int totalCount, Customer customer) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             args.putInt(ARG_TOTAL_COUNT, totalCount);
-            args.putSerializable(ARG_SURVEY_OBJECT, survey);
+            args.putSerializable(ARG_SURVEY_OBJECT, customer);
             fragment.setArguments(args);
             return fragment;
         }
@@ -140,7 +138,7 @@ public class SurveyDetailsActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_survey_details, container, false);
 
-            Survey survey = (Survey) getArguments().getSerializable(ARG_SURVEY_OBJECT);
+            Customer customer = (Customer) getArguments().getSerializable(ARG_SURVEY_OBJECT);
             int sectionNumber = (int)getArguments().getInt(ARG_SECTION_NUMBER);
             int totalCount = (int)getArguments().getInt(ARG_TOTAL_COUNT);
 
@@ -155,18 +153,18 @@ public class SurveyDetailsActivity extends AppCompatActivity {
             TextView mDateOfShopping = (TextView) rootView.findViewById(R.id.date_of_shopping);
 
             mSurveyEntryCount.setText("Contact " + (sectionNumber + 1) + " of " + totalCount);
-            mUserName.setText(survey.getUserName());
-            mPhoneNumber.setText(survey.getPhoneNumber());
-            mContactsGroup.setText(survey.getContactGroup());
-            mEmail.setText(survey.getEmail());
-            mGender.setText(survey.getGenderText());
-            mPlace.setText(survey.getPlace());
+            mUserName.setText(customer.getUserName());
+            mPhoneNumber.setText(customer.getPhoneNumber());
+            mContactsGroup.setText(customer.getContactGroup());
+            mEmail.setText(customer.getEmail());
+            mGender.setText(customer.getGenderText());
+            mPlace.setText(customer.getPlace());
 
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(survey.getDateOfBirth());
+            calendar.setTimeInMillis(customer.getDateOfBirth());
             mDateOfBirth.setText("Date of Birth: " + dateFormatter.format(calendar.getTime()));
 
-            calendar.setTimeInMillis(survey.getCreatedDate());
+            calendar.setTimeInMillis(customer.getCreatedDate());
             mDateOfShopping.setText("Date of shopping: " + dateFormatter.format(calendar.getTime()));
             return rootView;
         }
@@ -186,8 +184,8 @@ public class SurveyDetailsActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            Survey currentSurvey = dbHelper.getSurvey(position + 1);
-            return PlaceholderFragment.newInstance(position, getCount(), currentSurvey);
+            Customer currentCustomer = dbHelper.getSurvey(position + 1);
+            return PlaceholderFragment.newInstance(position, getCount(), currentCustomer);
         }
 
         @Override
@@ -197,7 +195,7 @@ public class SurveyDetailsActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Survey Entry : " + (position + 1);
+            return "Customer Entry : " + (position + 1);
         }
     }
 }

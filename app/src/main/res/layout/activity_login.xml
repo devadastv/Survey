@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context="com.corpus.survey.LoginActivity">
+    tools:context="com.corpus.sirentext.LoginActivity">
 
     <!-- Login progress -->
     <ProgressBar

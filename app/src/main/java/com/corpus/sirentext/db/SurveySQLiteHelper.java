@@ -1,4 +1,4 @@
-package com.corpus.survey.db;
+package com.corpus.sirentext.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.corpus.survey.Survey;
+import com.corpus.sirentext.Customer;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -95,17 +95,17 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public void createSurvey(Survey survey) {
+    public void createSurvey(Customer customer) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(SURVEY_COLUMN_NAME, survey.getUserName());
-        values.put(SURVEY_COLUMN_PHONE, survey.getPhoneNumber());
-        values.put(SURVEY_COLUMN_EMAIL, survey.getEmail());
-        values.put(SURVEY_COLUMN_GENDER, survey.getGender());
-        values.put(SURVEY_COLUMN_PLACE, survey.getPlace());
-        values.put(SURVEY_COLUMN_CREATED_DATE, survey.getCreatedDate());
-        values.put(SURVEY_COLUMN_DATE_OF_BIRTH, survey.getDateOfBirth());
-        values.put(SURVEY_COLUMN_CONTACT_GROUP, survey.getContactGroup());
+        values.put(SURVEY_COLUMN_NAME, customer.getUserName());
+        values.put(SURVEY_COLUMN_PHONE, customer.getPhoneNumber());
+        values.put(SURVEY_COLUMN_EMAIL, customer.getEmail());
+        values.put(SURVEY_COLUMN_GENDER, customer.getGender());
+        values.put(SURVEY_COLUMN_PLACE, customer.getPlace());
+        values.put(SURVEY_COLUMN_CREATED_DATE, customer.getCreatedDate());
+        values.put(SURVEY_COLUMN_DATE_OF_BIRTH, customer.getDateOfBirth());
+        values.put(SURVEY_COLUMN_CONTACT_GROUP, customer.getContactGroup());
         db.insert(SURVEY_TABLE_NAME, null, values);
         db.close();
     }
@@ -133,7 +133,7 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
         return db.query(SURVEY_TABLE_NAME, columns, selection, selectionArgs, null, null, orderBy);
     }
 
-    public Survey getSurvey(int id) {
+    public Customer getSurvey(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(SURVEY_TABLE_NAME, null, " _id = ?", new String[]{String.valueOf(id)}, null, null, null, null);
         Log.d("DBHelper", "getSurvey with id = " + id + " returned a cursor with length = " + cursor.getCount());
@@ -155,13 +155,13 @@ public class SurveySQLiteHelper extends SQLiteOpenHelper {
             long createdDate = cursor.getLong(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CREATED_DATE));
             long dateOfbirth = cursor.getLong(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_DATE_OF_BIRTH));
             int contactGroup = cursor.getInt(cursor.getColumnIndexOrThrow(SURVEY_COLUMN_CONTACT_GROUP));
-            Survey survey = new Survey(name, phoneNumber, gender, createdDate, contactGroup);
+            Customer customer = new Customer(name, phoneNumber, gender, createdDate, contactGroup);
             Log.d("DBHelper", "From DB: createdDate = " + createdDate + " dateOfbirth = " + dateOfbirth);
-            survey.setEmail(email);
-            survey.setPlace(place);
-            survey.setDateOfBirth(dateOfbirth);
+            customer.setEmail(email);
+            customer.setPlace(place);
+            customer.setDateOfBirth(dateOfbirth);
             cursor.close();
-            return survey;
+            return customer;
         }
         return null;
     }

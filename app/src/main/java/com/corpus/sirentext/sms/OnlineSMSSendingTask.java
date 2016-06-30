@@ -1,12 +1,9 @@
-package com.corpus.survey.sms;
+package com.corpus.sirentext.sms;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.corpus.survey.R;
-import com.corpus.survey.usermanagement.UserProfileManager;
+import com.corpus.sirentext.usermanagement.UserProfileManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;

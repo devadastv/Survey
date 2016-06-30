@@ -1,4 +1,4 @@
-package com.corpus.survey;
+package com.corpus.sirentext;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -20,13 +20,13 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.corpus.survey.db.SurveySQLiteHelper;
+import com.corpus.sirentext.db.SurveySQLiteHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class SurveyActivity extends AppCompatActivity {
+public class NewCustomerActivity extends AppCompatActivity {
 
     SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
     private EditText mSurveyPersonName;
@@ -64,17 +64,17 @@ public class SurveyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(SurveyActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewCustomerActivity.this);
                 builder.setTitle("Customer Group:");
                 builder.setCancelable(true);
                 AlertDialog dialog = builder.create();
                 dialog.getListView();
-                builder.setSingleChoiceItems(CustomerManager.getInstance().getCustomerGroupArray(SurveyActivity.this), selectedCustomerGroupIndex, new DialogInterface.OnClickListener() {
+                builder.setSingleChoiceItems(CustomerManager.getInstance().getCustomerGroupArray(NewCustomerActivity.this), selectedCustomerGroupIndex, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d("SurveyList", "User selected " + which);
                         selectedCustomerGroupIndex = which;
-                        String selectedCustomerGroup = CustomerManager.getInstance().getCustomerGroupAtIndex(which, SurveyActivity.this);
+                        String selectedCustomerGroup = CustomerManager.getInstance().getCustomerGroupAtIndex(which, NewCustomerActivity.this);
                         if (null != selectedCustomerGroup) {
                             mCustomerGroup.setText(selectedCustomerGroup);
                         }
@@ -127,26 +127,26 @@ public class SurveyActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
 
-            Survey survey = new Survey(surveyPersonName, mobileNumber, gender, System.currentTimeMillis(), selectedCustomerGroupIndex);
+            Customer customer = new Customer(surveyPersonName, mobileNumber, gender, System.currentTimeMillis(), selectedCustomerGroupIndex);
 
             // Set optional fields
             // Email ID
             EditText mEmail = (EditText) findViewById(R.id.customer_email);
             if (mEmail.length() > 0) {
-                survey.setEmail(mEmail.getText().toString());
+                customer.setEmail(mEmail.getText().toString());
             }
 
             // Place
             EditText mSurveyPlace = (EditText) findViewById(R.id.place);
             if (mSurveyPlace.length() > 0) {
-                survey.setPlace(mSurveyPlace.getText().toString());
+                customer.setPlace(mSurveyPlace.getText().toString());
             }
 
             // Date of Birth
-            survey.setDateOfBirth(dateOfBirthMillis);
+            customer.setDateOfBirth(dateOfBirthMillis);
 
-            dbHelper.createSurvey(survey);
-            Toast.makeText(this, "This survey is successfully submitted. Thanks!", Toast.LENGTH_SHORT).show();
+            dbHelper.createSurvey(customer);
+            Toast.makeText(this, "This customer is successfully submitted. Thanks!", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -160,15 +160,15 @@ public class SurveyActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.radio_male:
                 if (checked)
-                    gender = Survey.GENDER_MALE;
+                    gender = com.corpus.sirentext.Customer.GENDER_MALE;
                 break;
             case R.id.radio_female:
                 if (checked)
-                    gender = Survey.GENDER_FEMALE;
+                    gender = com.corpus.sirentext.Customer.GENDER_FEMALE;
                 break;
             case R.id.radio_other:
                 if (checked)
-                    gender = Survey.GENDER_OTHER;
+                    gender = com.corpus.sirentext.Customer.GENDER_OTHER;
                 break;
         }
         hideKeyboard();
@@ -193,7 +193,7 @@ public class SurveyActivity extends AppCompatActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker if there is no date already set in DatePicker
             final Calendar c = Calendar.getInstance();
-            SurveyActivity activity = (SurveyActivity) getActivity();
+            NewCustomerActivity activity = (NewCustomerActivity) getActivity();
             if (activity.dateOfBirthMillis >= 1) {
                 c.setTimeInMillis(activity.dateOfBirthMillis);
             }
@@ -208,7 +208,7 @@ public class SurveyActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int year, int month, int day) {
             Calendar newDate = Calendar.getInstance();
             newDate.set(year, month, day);
-            SurveyActivity activity = (SurveyActivity) getActivity();
+            NewCustomerActivity activity = (NewCustomerActivity) getActivity();
             activity.mDateOfBirth.setText(dateFormatter.format(newDate.getTime()));
             activity.dateOfBirthMillis = newDate.getTimeInMillis();
         }
