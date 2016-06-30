@@ -50,7 +50,6 @@ public class SendSMSActivity extends AppCompatActivity {
 
     private SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
     EditText mTagetNumbers;
-    private String smsGatewayPref;
     private EditText mCustomerGroup;
     private int selectedCustomerGroupIndex = -1; // TODO: Can be used in future based on pref - to allow user to send messge to single or multiple groups???
     private boolean[] selectedCustomerGroupIndexArray;
@@ -81,7 +80,7 @@ public class SendSMSActivity extends AppCompatActivity {
         mMessageText = (EditText) findViewById(R.id.sms_text);
         mMessageText.addTextChangedListener(mTextEditorWatcher);
 
-        if (targetMobileNumber.equals(""))
+        if (targetMobileNumber.trim().equals(""))
         {
             mTagetNumbers.requestFocus();
         }
@@ -141,16 +140,26 @@ public class SendSMSActivity extends AppCompatActivity {
             }
         });
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        smsGatewayPref = sharedPref.getString(SettingsActivity.KEY_PREF_SMS_GATEWAY, "");
-        Log.d("SendSMS", "Current SMS gateway pref = " + smsGatewayPref);
-
         Button mPredefinedMessagesButton = (Button) findViewById(R.id.predefined_message);
         mPredefinedMessagesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent contentSummaryIntent = new Intent(SendSMSActivity.this, PredefinedMessagesActivity.class);
                 startActivityForResult(contentSummaryIntent, PredefinedMessagesActivity.REQUEST_CODE_PICK_MESSAGE);
+            }
+        });
+
+        Button mClearAllButton = (Button) findViewById(R.id.clear_all);
+        mClearAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTagetNumbers.setText("");
+                mMessageText.setText("");
+                mCustomerGroup.setText("");
+                for (int i = 0; i < selectedCustomerGroupIndexArray.length; i++) {
+                    selectedCustomerGroupIndexArray[i] = false;
+                }
+                mTagetNumbers.requestFocus();
             }
         });
 
@@ -169,6 +178,9 @@ public class SendSMSActivity extends AppCompatActivity {
         trimNumbers(numbers);
         String message = mMessageText.getText().toString();
         if (isAtLeastOneValidNumber(numbers)) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            String smsGatewayPref = sharedPref.getString(SettingsActivity.KEY_PREF_SMS_GATEWAY, "");
+            Log.d("SendSMS", "Current SMS gateway pref = " + smsGatewayPref);
             BaseSmsSendingTask smsSendingTask = SmsSendingTaskFactory.getSmsSendingTask(smsGatewayPref, message, this);
             smsSendingTask.execute(numbers);
         } else {
