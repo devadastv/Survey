@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.corpus.sirentext.sms.SendSMSActivity;
 import com.corpus.sirentext.usermanagement.SaveSharedPreference;
@@ -25,38 +26,38 @@ public class SplashActivity extends AppCompatActivity {
 
         try {
             PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            if (networkInfo == null || !networkInfo.isConnected()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setCancelable(false);
-                AlertDialog dialog = builder.create();
-                dialog.getListView();
-                builder.setTitle(getString(R.string.not_connected_warning_title));
-                builder.setMessage(getString(R.string.not_connected_warning_message));
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                });
-                builder.show();
+
+            UserProfileManager.getInstance().setCredentialStorage(new SaveSharedPreference(this));
+            Intent intent = null;
+            if (UserProfileManager.getInstance().isUserAlreadyLoggedIn()) {
+                intent = new Intent(this, SendSMSActivity.class);
             } else {
-                UserProfileManager.getInstance().setCredentialStorage(new SaveSharedPreference(this));
-                Intent intent;
-                if (UserProfileManager.getInstance().isUserAlreadyLoggedIn())
-                {
-                    intent = new Intent(this, SendSMSActivity.class);
-                }
-                else
-                {
+                ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+                if (networkInfo == null || !networkInfo.isConnected()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
+                    builder.setCancelable(false);
+                    builder.setTitle(getString(R.string.not_connected_warning_title));
+                    builder.setMessage(getString(R.string.not_connected_warning_message));
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+                    builder.show();
+                } else {
                     intent = new Intent(this, LoginActivity.class);
                 }
+            }
 
+            if (null != intent) {
+                Thread.sleep(1000);
                 startActivity(intent);
                 finish();
             }
-            Thread.sleep(1000);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
