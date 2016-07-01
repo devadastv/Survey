@@ -14,7 +14,7 @@
     <string name="registration_help_message">To register, please contact administrator.\n+91 85930 52720</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_password">This password is empty</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_account_deactivated">This account is deactivated. \nPlease contact administrator.</string>
     <string name="error_not_connected_to_network">Device is not connected to internet. \nPlease connect and try again</string>
