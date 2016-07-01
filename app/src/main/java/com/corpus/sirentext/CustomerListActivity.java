@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -48,7 +49,13 @@ public class CustomerListActivity extends AppCompatActivity {
         if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startSendSMSActivity();
+            }
+        });
         Bundle extras = getIntent().getExtras();
         int selectedCustomerGroup = -1;
         if (extras != null) {
@@ -62,13 +69,12 @@ public class CustomerListActivity extends AppCompatActivity {
         String[] fromColumns = {SurveySQLiteHelper.SURVEY_COLUMN_NAME, SurveySQLiteHelper.SURVEY_COLUMN_PHONE};
         int[] toViews = {android.R.id.text1, android.R.id.text2};
 
-        if (selectedCustomerGroup != -1)
-        {
-            selection =  SurveySQLiteHelper.SURVEY_COLUMN_CONTACT_GROUP + "=" + selectedCustomerGroup;
+        if (selectedCustomerGroup != -1) {
+            selection = SurveySQLiteHelper.SURVEY_COLUMN_CONTACT_GROUP + "=" + selectedCustomerGroup;
 //            selectionArgs = new String[]{dbHelper.getCustomerGroup(selectedCustomerGroup)};
         }
         Log.d(TAG, "selection in CustomerList = " + selection);
-        currentFilteredCursor =  dbHelper.getFilteredList(selection, selectionArgs, orderBy);
+        currentFilteredCursor = dbHelper.getFilteredList(selection, selectionArgs, orderBy);
         Log.d(TAG, "No of contacts in currentFilteredCursor obtained in CustomerList = " + currentFilteredCursor.getCount());
         mAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_2, currentFilteredCursor,
@@ -94,7 +100,7 @@ public class CustomerListActivity extends AppCompatActivity {
     }
 
     private void updateCurrentFilterCursor() {
-        currentFilteredCursor =  dbHelper.getFilteredList(selection, selectionArgs, orderBy);
+        currentFilteredCursor = dbHelper.getFilteredList(selection, selectionArgs, orderBy);
         mAdapter.changeCursor(currentFilteredCursor);
     }
 
@@ -113,19 +119,9 @@ public class CustomerListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_sendSMS) {
-            String formattedTargetMobileNumbers = getFormattedTargetMobileNumbers();
-            if (TextUtils.isEmpty(formattedTargetMobileNumbers)) {
-                Toast.makeText(this, "The SMS can be sent only with a non-empty list", Toast.LENGTH_SHORT).show();
-            } else {
-                Intent sendSMSIntent = new Intent(CustomerListActivity.this, SendSMSActivity.class);
-                Bundle extras = new Bundle();
-                extras.putString(SendSMSActivity.SEND_SMS_MULTIPLE_TARGETS, formattedTargetMobileNumbers);
-                sendSMSIntent.putExtras(extras);
-                startActivity(sendSMSIntent);
-            }
+            startSendSMSActivity();
             return true;
-        }
-        else if (id == R.id.action_sort) {
+        } else if (id == R.id.action_sort) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Sort by:");
             builder.setCancelable(true);
@@ -142,6 +138,19 @@ public class CustomerListActivity extends AppCompatActivity {
             builder.show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startSendSMSActivity() {
+        String formattedTargetMobileNumbers = getFormattedTargetMobileNumbers();
+        if (TextUtils.isEmpty(formattedTargetMobileNumbers)) {
+            Toast.makeText(this, "The SMS can be sent only with a non-empty list", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent sendSMSIntent = new Intent(CustomerListActivity.this, SendSMSActivity.class);
+            Bundle extras = new Bundle();
+            extras.putString(SendSMSActivity.SEND_SMS_MULTIPLE_TARGETS, formattedTargetMobileNumbers);
+            sendSMSIntent.putExtras(extras);
+            startActivity(sendSMSIntent);
+        }
     }
 
     private String getFormattedTargetMobileNumbers() {
@@ -181,8 +190,7 @@ public class CustomerListActivity extends AppCompatActivity {
 
     public String getSortOrderString(int sortOrderIndex) {
         String sortOrderString;
-        switch (sortOrderIndex)
-        {
+        switch (sortOrderIndex) {
             case SurveySQLiteHelper.SORT_PURCHASE_DATE:
                 sortOrderString = SurveySQLiteHelper.SURVEY_COLUMN_CREATED_DATE + " DESC";
                 break;
