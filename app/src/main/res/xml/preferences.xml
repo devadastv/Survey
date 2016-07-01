@@ -30,14 +30,21 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_title_sms_gateway" />
 
+    <CheckBoxPreference
+        android:key="pref_send_welcome_sms"
+        android:title="@string/pref_send_welcome_sms"
+        android:summary="@string/summary_send_welcome_sms"
+        android:defaultValue="false" />
+
     <EditTextPreference
-        android:capitalize="words"
-        android:defaultValue="@string/pref_default_customer_group"
-        android:inputType="textCapWords"
-        android:key="customer_group"
-        android:maxLines="1"
+        android:capitalize="sentences"
+        android:defaultValue="@string/pref_welcome_sms_text"
+        android:inputType="textCapSentences"
+        android:key="welcome_sms"
+        android:maxLines="5"
+        android:minLines="3"
         android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_title_customer_group" />
+        android:singleLine="false"
+        android:title="@string/pref_welcome_sms" />
 
 </PreferenceScreen>

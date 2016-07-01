@@ -95,6 +95,12 @@
         <item>ONLINE</item>
     </string-array>
 
+    <string name="pref_send_welcome_sms">Send Welcome SMS</string>
+    <string name="summary_send_welcome_sms">Send a welcome SMS when adding a new contact</string>
+
+    <string name="pref_welcome_sms">Welcome SMS</string>
+    <string name="pref_welcome_sms_text">Dear Customer,\nWelcome to SHOP. Thanks for registering to receive exclusive offers.</string>
+
     <string-array name="sort_options">
         <item>Purchase Date</item>
         <item>Name</item>

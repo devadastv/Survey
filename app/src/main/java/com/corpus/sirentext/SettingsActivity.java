@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -12,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -28,7 +30,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     public static final String KEY_PREF_SMS_GATEWAY = "sms_gateway";
     public static final String KEY_PREF_SHOP_NAME = "shop_name";
-    public static final String KEY_PREF_CUSTOMER_GROUP = "customer_group";
+    public static final String KEY_PREF_WELCOME_SMS = "welcome_sms";
 
     public static final String PREF_VALUE_SMS_GATEWAY_SIM = "SIM";
     public static final String PREF_VALUE_SMS_GATEWAY_ONLINE = "ONLINE";
@@ -132,7 +134,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
-            getPreferenceScreen().removePreference(findPreference(KEY_PREF_CUSTOMER_GROUP));
             setHasOptionsMenu(true);
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
@@ -141,6 +142,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference(KEY_PREF_SHOP_NAME));
             bindPreferenceSummaryToValue(findPreference(KEY_PREF_SMS_GATEWAY));
+            EditTextPreference welcomeSmsTextPref = (EditTextPreference)findPreference(KEY_PREF_WELCOME_SMS);
+            EditText editText = welcomeSmsTextPref.getEditText();
+            editText.setSingleLine(false);
+            editText.setMinLines(3);
+            editText.setMaxLines(5);
+            bindPreferenceSummaryToValue(findPreference(KEY_PREF_WELCOME_SMS));
         }
 
         @Override
