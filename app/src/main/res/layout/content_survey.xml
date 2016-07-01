@@ -123,39 +123,39 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="@dimen/activity_vertical_margin">
+            <!--<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="vertical"-->
+                <!--android:paddingTop="@dimen/activity_vertical_margin">-->
 
-                <TextView
-                    android:id="@+id/tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Gender:" />
+                <!--<TextView-->
+                    <!--android:id="@+id/tv"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Gender:" />-->
 
-                <RadioButton
-                    android:id="@+id/radio_male"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="Male" />
+                <!--<RadioButton-->
+                    <!--android:id="@+id/radio_male"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:onClick="onRadioButtonClicked"-->
+                    <!--android:text="Male" />-->
 
-                <RadioButton
-                    android:id="@+id/radio_female"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="Female" />
+                <!--<RadioButton-->
+                    <!--android:id="@+id/radio_female"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:onClick="onRadioButtonClicked"-->
+                    <!--android:text="Female" />-->
 
-                <RadioButton
-                    android:id="@+id/radio_other"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="Other" />
-            </RadioGroup>
+                <!--<RadioButton-->
+                    <!--android:id="@+id/radio_other"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:onClick="onRadioButtonClicked"-->
+                    <!--android:text="Other" />-->
+            <!--</RadioGroup>-->
 
             <Button
                 android:id="@+id/submit"

@@ -155,25 +155,25 @@ public class NewCustomerActivity extends AppCompatActivity {
         return mobileNumber.length() > 10;
     }
 
-    public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-        switch (view.getId()) {
-            case R.id.radio_male:
-                if (checked)
-                    gender = com.corpus.sirentext.Customer.GENDER_MALE;
-                break;
-            case R.id.radio_female:
-                if (checked)
-                    gender = com.corpus.sirentext.Customer.GENDER_FEMALE;
-                break;
-            case R.id.radio_other:
-                if (checked)
-                    gender = com.corpus.sirentext.Customer.GENDER_OTHER;
-                break;
-        }
-        hideKeyboard();
-        view.requestFocus();
-    }
+//    public void onRadioButtonClicked(View view) {
+//        boolean checked = ((RadioButton) view).isChecked();
+//        switch (view.getId()) {
+//            case R.id.radio_male:
+//                if (checked)
+//                    gender = com.corpus.sirentext.Customer.GENDER_MALE;
+//                break;
+//            case R.id.radio_female:
+//                if (checked)
+//                    gender = com.corpus.sirentext.Customer.GENDER_FEMALE;
+//                break;
+//            case R.id.radio_other:
+//                if (checked)
+//                    gender = com.corpus.sirentext.Customer.GENDER_OTHER;
+//                break;
+//        }
+//        hideKeyboard();
+//        view.requestFocus();
+//    }
 
     private void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
