@@ -30,6 +30,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     public static final String KEY_PREF_SMS_GATEWAY = "sms_gateway";
     public static final String KEY_PREF_SHOP_NAME = "shop_name";
+    public static final String KEY_PREF_SEND_WELCOME_SMS = "pref_send_welcome_sms";
     public static final String KEY_PREF_WELCOME_SMS = "welcome_sms";
 
     public static final String PREF_VALUE_SMS_GATEWAY_SIM = "SIM";

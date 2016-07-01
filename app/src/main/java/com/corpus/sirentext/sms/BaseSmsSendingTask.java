@@ -1,5 +1,6 @@
 package com.corpus.sirentext.sms;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -11,14 +12,14 @@ import com.corpus.sirentext.R;
 /**
  * Created by devadas.vijayan on 6/13/16.
  */
-abstract class BaseSmsSendingTask extends AsyncTask<String, Integer, String> {
+public abstract class BaseSmsSendingTask extends AsyncTask<String, Integer, String> {
 
     final String message;
-    SendSMSActivity activity;
+    Activity activity;
     String[] numbers;
 //    ProgressDialog progressDialog;
 
-    public BaseSmsSendingTask(String message, SendSMSActivity activity) {
+    public BaseSmsSendingTask(String message, Activity activity) {
         this.message = message;
         this.activity = activity;
     }

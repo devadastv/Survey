@@ -4,7 +4,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.corpus.sirentext.db.SurveySQLiteHelper;
+import com.corpus.sirentext.sms.BaseSmsSendingTask;
+import com.corpus.sirentext.sms.SmsSendingTaskFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -172,7 +176,19 @@ public class NewCustomerActivity extends AppCompatActivity {
 
             dbHelper.createSurvey(customer);
             Toast.makeText(this, "This contact is saved.", Toast.LENGTH_SHORT).show();
-            finish();
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean sendWelcomeSmsPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_SEND_WELCOME_SMS, false);
+            Log.d("SendSMS", "Current Welcome SMS send pref = " + sendWelcomeSmsPref);
+            if (sendWelcomeSmsPref)
+            {
+                String smsGatewayPref = sharedPref.getString(SettingsActivity.KEY_PREF_SMS_GATEWAY, "");
+                BaseSmsSendingTask smsSendingTask = SmsSendingTaskFactory.getSmsSendingTask(smsGatewayPref, sharedPref.getString(SettingsActivity.KEY_PREF_WELCOME_SMS, ""), NewCustomerActivity.this);
+                smsSendingTask.execute(mobileNumber);
+            }
+            else
+            {
+                finish();
+            }
         }
     }
 

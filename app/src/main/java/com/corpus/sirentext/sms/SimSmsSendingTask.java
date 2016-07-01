@@ -11,6 +11,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.corpus.sirentext.NewCustomerActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -28,7 +30,7 @@ class SimSmsSendingTask extends BaseSmsSendingTask {
     private int mMessageSentTotalParts;
     private int mMessageSentParts;
 
-    public SimSmsSendingTask(String message, SendSMSActivity activity) {
+    public SimSmsSendingTask(String message, Activity activity) {
         super(message, activity);
     }
 
@@ -67,6 +69,10 @@ class SimSmsSendingTask extends BaseSmsSendingTask {
     protected void onPostExecute(String result) {
         unregisterBroadcastReceivers();
 //        progressDialog.dismiss();
+        if (activity instanceof NewCustomerActivity)
+        {
+            activity.finish();
+        }
         activity = null;
     }
 

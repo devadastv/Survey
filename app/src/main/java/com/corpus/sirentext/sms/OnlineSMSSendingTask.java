@@ -1,8 +1,10 @@
 package com.corpus.sirentext.sms;
 
+import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.corpus.sirentext.NewCustomerActivity;
 import com.corpus.sirentext.usermanagement.UserProfileManager;
 
 import java.io.BufferedReader;
@@ -20,7 +22,7 @@ class OnlineSMSSendingTask extends BaseSmsSendingTask {
     private static final boolean USE_ACTUAL_PROVIDER_FROM_PROFILE = true;
     private static final String TAG = "SendSMS";
 
-    public OnlineSMSSendingTask(String message, SendSMSActivity activity) {
+    public OnlineSMSSendingTask(String message, Activity activity) {
         super(message, activity);
     }
 
@@ -80,6 +82,10 @@ class OnlineSMSSendingTask extends BaseSmsSendingTask {
 
     protected void onPostExecute(String result) {
 //        progressDialog.dismiss();
+        if (activity instanceof NewCustomerActivity)
+        {
+            activity.finish();
+        }
         activity = null;
     }
 

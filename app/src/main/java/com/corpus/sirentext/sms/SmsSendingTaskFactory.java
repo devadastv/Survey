@@ -1,5 +1,6 @@
 package com.corpus.sirentext.sms;
 
+import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -10,7 +11,7 @@ import com.corpus.sirentext.SettingsActivity;
  */
 public class SmsSendingTaskFactory {
 
-    public static BaseSmsSendingTask getSmsSendingTask(String prefValue, String message, SendSMSActivity activity)
+    public static BaseSmsSendingTask getSmsSendingTask(String prefValue, String message, Activity activity)
     {
         BaseSmsSendingTask asyncTask;
         switch (prefValue)
