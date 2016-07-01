@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,7 +34,13 @@ import com.corpus.sirentext.SettingsActivity;
 import com.corpus.sirentext.db.SurveySQLiteHelper;
 import com.corpus.sirentext.usermanagement.UserProfileManager;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class SendSMSActivity extends AppCompatActivity {
+
+    public static final String TAG = "SendSMSActivity";
 
     public static String SEND_SMS_SINGLE_TARGET = "sendSMSSingleTaget";
     public static String SEND_SMS_MULTIPLE_TARGETS = "sendSMSMultipleTagets";
@@ -105,9 +112,17 @@ public class SendSMSActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         StringBuilder builder = new StringBuilder();
+                        List<String> customerNumberList = new ArrayList<>();
                         for (int i = 0; i < selectedCustomerGroupIndexArray.length; i++) {
                             if (selectedCustomerGroupIndexArray[i]) {
                                 String selectedCustomerGroup = dbHelper.getCustomerGroup(i + 1);
+                                List<String> customerNumberListInGroup = getListOfCustomerNumbersInGroup(i);
+                                for (String number : customerNumberListInGroup) {
+                                    if (!customerNumberList.contains(number))
+                                    {
+                                        customerNumberList.add(number);
+                                    }
+                                }
                                 if (null != selectedCustomerGroup) {
                                     builder.append(", ");
                                     builder.append(selectedCustomerGroup);
@@ -118,6 +133,17 @@ public class SendSMSActivity extends AppCompatActivity {
                             builder.delete(0, 1);
                         }
                         mCustomerGroup.setText(builder.toString());
+
+                        // Numbers update
+                        StringBuilder numberBuilder = new StringBuilder();
+                        for (String s : customerNumberList) {
+                            numberBuilder.append(", ");
+                            numberBuilder.append(s);
+                        }
+                        if (numberBuilder.length() > 1) {
+                            numberBuilder.delete(0, 1);
+                        }
+                        mTagetNumbers.setText(numberBuilder.toString());
                         dialog.dismiss();
                     }
                 });
@@ -155,6 +181,21 @@ public class SendSMSActivity extends AppCompatActivity {
                 startSendMessages();
             }
         });
+    }
+
+    private List<String> getListOfCustomerNumbersInGroup(int i) {
+        String selection = SurveySQLiteHelper.SURVEY_COLUMN_CONTACT_GROUP + "=" + i;
+        List<String> customerNumbersList = new ArrayList<>();
+        Cursor cursor = dbHelper.getFilteredList(selection, null, null);
+        try {
+            while (cursor.moveToNext()) {
+                customerNumbersList.add(cursor.getString(cursor.getColumnIndexOrThrow(SurveySQLiteHelper.SURVEY_COLUMN_PHONE)));
+            }
+        } finally {
+            cursor.close();
+        }
+        Log.d(TAG, "Number of contacts in group " + i + " is " + customerNumbersList.size());
+        return customerNumbersList;
     }
 
     @Override
