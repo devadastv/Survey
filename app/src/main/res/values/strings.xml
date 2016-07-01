@@ -54,6 +54,7 @@
     <string name="predefined_message">Predefined Message</string>
     <string name="select_customer_group">Select Customer Group</string>
     <string name="mobile_numbers">Mobile Numbers</string>
+    <string name="messages_left">Messages Left: </string>
 
     <!--SEND SMS MENU-->
     <string name="clear_all_contacts">Delete All Contacts</string>
@@ -107,12 +108,15 @@
     <string name="new_predefined_message">New Predefined Message</string>
     <string name="predefined_message_enter">Enter your Predefined Message \nhere</string>
 
-    <string name="predefined_message_sample_1">Hi, Welcome to SHOP.\n Thanks for your interest in participating our customer program.</string>
-    <string name="predefined_message_sample_2">Dear Customer,\nSHOP wishes you a Merry Christmas and a Happy New Year.</string>
-    <string name="predefined_message_sample_3">Dear Customer,\nCongratulations!\nWalk into SHOP within a week with this SMS and get exclusive 50% off.</string>
+    <string name="predefined_message_sample_1">Hi, Welcome to SHOP.\nThanks for your interest in participating our customer program.\n</string>
+    <string name="predefined_message_sample_2">Dear Customer,\nSHOP wishes you a Merry Christmas and a Happy New Year.\n</string>
+    <string name="predefined_message_sample_3">Dear Customer,\nCongratulations!\nWalk into SHOP within a week with this SMS and get exclusive 50% off.\n</string>
 
     <string name="customer_group_sample_1">Friends</string>
     <string name="customer_group_sample_2">Family</string>
     <string name="customer_group_sample_3">Colleagues</string>
     <string name="title_activity_customer_group_list_activiy">Customer Groups</string>
+
+    <!--CUSTOMER LIST-->
+    <string name="empty_customer_list_message">There are no customers added in this list</string>
 </resources>

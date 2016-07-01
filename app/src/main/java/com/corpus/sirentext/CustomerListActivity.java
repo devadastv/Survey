@@ -64,6 +64,7 @@ public class CustomerListActivity extends AppCompatActivity {
         }
 
         ListView mSurveyList = (ListView) findViewById(R.id.survey_list);
+        mSurveyList.setEmptyView(findViewById(android.R.id.empty));
 
         // For the cursor adapter, specify which columns go into which views
         String[] fromColumns = {SurveySQLiteHelper.SURVEY_COLUMN_NAME, SurveySQLiteHelper.SURVEY_COLUMN_PHONE};
