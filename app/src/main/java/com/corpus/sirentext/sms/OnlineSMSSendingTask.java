@@ -79,7 +79,7 @@ class OnlineSMSSendingTask extends BaseSmsSendingTask {
     }
 
     protected void onPostExecute(String result) {
-        progressDialog.dismiss();
+//        progressDialog.dismiss();
         activity = null;
     }
 

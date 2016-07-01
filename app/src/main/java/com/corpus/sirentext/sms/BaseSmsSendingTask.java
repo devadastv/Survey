@@ -16,7 +16,7 @@ abstract class BaseSmsSendingTask extends AsyncTask<String, Integer, String> {
     final String message;
     SendSMSActivity activity;
     String[] numbers;
-    ProgressDialog progressDialog;
+//    ProgressDialog progressDialog;
 
     public BaseSmsSendingTask(String message, SendSMSActivity activity) {
         this.message = message;
@@ -26,18 +26,18 @@ abstract class BaseSmsSendingTask extends AsyncTask<String, Integer, String> {
     @Override
     protected void onPreExecute() {
         Log.d("SendSMS", "inside onPreExecute of BaseSmsSendingTask. About to display the progress dialog");
-        progressDialog = new ProgressDialog(activity);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setTitle(activity.getResources().getString(R.string.sending));
-        progressDialog.setMessage(activity.getResources().getString(R.string.sending_wait_message));
-        progressDialog.setIndeterminate(false);
-        progressDialog.setCancelable(true);
-        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
-                cancel(true);
-            }
-        });
-        progressDialog.show();
+//        progressDialog = new ProgressDialog(activity);
+//        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//        progressDialog.setTitle(activity.getResources().getString(R.string.sending));
+//        progressDialog.setMessage(activity.getResources().getString(R.string.sending_wait_message));
+//        progressDialog.setIndeterminate(false);
+//        progressDialog.setCancelable(true);
+//        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//            public void onCancel(DialogInterface dialog) {
+//                cancel(true);
+//            }
+//        });
+//        progressDialog.show();
     }
 
 
@@ -54,7 +54,7 @@ abstract class BaseSmsSendingTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected void onProgressUpdate(Integer... progress) {
-        progressDialog.setProgress(progress[0].intValue());
+//        progressDialog.setProgress(progress[0].intValue());
     }
 
 

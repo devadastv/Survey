@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.corpus.sirentext.CustomerGroupListActiviy;
-import com.corpus.sirentext.CustomerListActivity;
 import com.corpus.sirentext.LoginActivity;
 import com.corpus.sirentext.NewCustomerActivity;
 import com.corpus.sirentext.PredefinedMessagesActivity;
@@ -33,8 +32,6 @@ import com.corpus.sirentext.R;
 import com.corpus.sirentext.SettingsActivity;
 import com.corpus.sirentext.db.SurveySQLiteHelper;
 import com.corpus.sirentext.usermanagement.UserProfileManager;
-
-import java.io.IOException;
 
 public class SendSMSActivity extends AppCompatActivity {
 

@@ -18,6 +18,7 @@ import java.util.ArrayList;
  */
 class SimSmsSendingTask extends BaseSmsSendingTask {
 
+    private static final String TAG = "BaseSmsSendingTask";
     private final String SENT = "SMS_SENT";
     private final String DELIVERED = "SMS_DELIVERED";
 
@@ -65,7 +66,7 @@ class SimSmsSendingTask extends BaseSmsSendingTask {
 
     protected void onPostExecute(String result) {
         unregisterBroadcastReceivers();
-        progressDialog.dismiss();
+//        progressDialog.dismiss();
         activity = null;
     }
 
@@ -187,6 +188,7 @@ class SimSmsSendingTask extends BaseSmsSendingTask {
     }
 
     private void registerBroadCastReceivers() {
+        Log.d(TAG, "Inside registerBroadCastReceivers with isReceiversRegistered = " + isReceiversRegistered);
         if (!isReceiversRegistered) {
             activity.registerReceiver(smsSentReceiver, new IntentFilter(SENT));
             activity.registerReceiver(smsDeliveredReceiver, new IntentFilter(DELIVERED));
@@ -195,6 +197,7 @@ class SimSmsSendingTask extends BaseSmsSendingTask {
     }
 
     private void unregisterBroadcastReceivers() {
+        Log.d(TAG, "Inside unregisterBroadcastReceivers with isReceiversRegistered = " + isReceiversRegistered);
         if (isReceiversRegistered) {
             activity.unregisterReceiver(smsSentReceiver);
             activity.unregisterReceiver(smsDeliveredReceiver);
