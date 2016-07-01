@@ -46,4 +46,14 @@ public class SaveSharedPreference {
         this.edit.putString(PREF_KEY_LOGIN_STATUS, PREF_VALUE_NOT_LOGGED_IN);
         this.edit.apply();
     }
+
+    String getCurrentUsername()
+    {
+        return shared.getString(PREF_KEY_USER_NAME, "");
+    }
+
+    String getCurrentUserPassword()
+    {
+        return shared.getString(PREF_KEY_PASSWORD, "");
+    }
 }

@@ -123,6 +123,15 @@
                 android:text="@string/send_sms"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/messages_left"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/messages_left"
+                android:textColor="#888888"
+                android:gravity="center" />
+
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

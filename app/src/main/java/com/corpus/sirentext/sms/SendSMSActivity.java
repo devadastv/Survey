@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +34,8 @@ import com.corpus.sirentext.SettingsActivity;
 import com.corpus.sirentext.db.SurveySQLiteHelper;
 import com.corpus.sirentext.usermanagement.UserProfileManager;
 
+import java.io.IOException;
+
 public class SendSMSActivity extends AppCompatActivity {
 
     public static String SEND_SMS_SINGLE_TARGET = "sendSMSSingleTaget";
@@ -39,6 +43,7 @@ public class SendSMSActivity extends AppCompatActivity {
 
 
     private SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
+    private BalanceSMSUpdaterTask balanceSMSUpdaterTask;
     EditText mTagetNumbers;
     private EditText mCustomerGroup;
     private int selectedCustomerGroupIndex = -1; // TODO: Can be used in future based on pref - to allow user to send messge to single or multiple groups???
@@ -72,6 +77,8 @@ public class SendSMSActivity extends AppCompatActivity {
 
         mMessageCharCount = (TextView) findViewById(R.id.sms_char_count);
         updateCharacterCount(0);
+
+        updateRemainingMessagesCountInAsyncTask();
 
         mCustomerGroup = (EditText) findViewById(R.id.select_customer_group);
         mCustomerGroup.setInputType(InputType.TYPE_NULL);
@@ -220,6 +227,14 @@ public class SendSMSActivity extends AppCompatActivity {
             Log.d("SendSMS", "Current SMS gateway pref = " + smsGatewayPref);
             BaseSmsSendingTask smsSendingTask = SmsSendingTaskFactory.getSmsSendingTask(smsGatewayPref, message, this);
             smsSendingTask.execute(numbers);
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateRemainingMessagesCountInAsyncTask();
+                }
+            }, 10000);
         } else {
             Toast.makeText(this, "At least one mobile number should be there to send SMS", Toast.LENGTH_LONG).show();
         }
@@ -253,6 +268,28 @@ public class SendSMSActivity extends AppCompatActivity {
         }
     }
 
+    public void updateRemainingMessagesCountInAsyncTask() {
+        if (balanceSMSUpdaterTask != null) {
+            return;
+        }
+        balanceSMSUpdaterTask = new BalanceSMSUpdaterTask();
+        balanceSMSUpdaterTask.execute((Void) null);
+    }
+
+    private void updateRemainingMessagesCount() {
+        int messagesLeft = UserProfileManager.getInstance().getRemainingMessagesCount(this);
+        final TextView mMessagesLeft = (TextView) findViewById(R.id.messages_left);
+        final StringBuilder builder = new StringBuilder();
+        builder.append(getResources().getString(R.string.messages_left));
+        builder.append(messagesLeft);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMessagesLeft.setText(builder.toString());
+            }
+        });
+    }
+
     private void updateCharacterCount(int totalCharCount) {
         final int CHAR_COUNT_PER_SMS = 160;
         int smsCount = totalCharCount / CHAR_COUNT_PER_SMS + 1;
@@ -280,4 +317,22 @@ public class SendSMSActivity extends AppCompatActivity {
             updateCharacterCount(s.length());
         }
     };
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class BalanceSMSUpdaterTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            updateRemainingMessagesCount();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
 }

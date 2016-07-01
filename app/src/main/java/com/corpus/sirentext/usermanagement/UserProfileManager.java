@@ -25,6 +25,7 @@ import java.net.URLEncoder;
  */
 public class UserProfileManager {
     private static UserProfileManager instance;
+    private static final String TAG = "UserProfileManager";
 
     // HTTP Response 'contains' strings defined by http://sms.sirentext.com/Client/SMSAPI.aspx
 //    public static final String AUTHENTICATION_SUCCESS_STRING = null; // Not defined
@@ -49,7 +50,6 @@ public class UserProfileManager {
     public static final int MAX_TARGET_NUMBERS_PER_HTTP_POST = 100;
 
     private String currentUserEmail;
-    private String password;
     private SaveSharedPreference credentialStorage;
 
     public static UserProfileManager getInstance() {
@@ -60,12 +60,25 @@ public class UserProfileManager {
     }
 
     public int performSignIn(String email, String password, Activity activity) throws IOException {
+        String accountBalanceQueryResponse = getAccountBalanceResponseString(email, password, activity);
+        if (null == accountBalanceQueryResponse) {
+            return NOT_CONNECTED_TO_NETWORK;
+        }
+        int authenticationStatus = getAuthenticationStatusFromResponseString(accountBalanceQueryResponse);
+        if (authenticationStatus == AUTHENTICATION_SUCCESS) {
+            this.currentUserEmail = email;
+            credentialStorage.saveValidCredentials(email, password);
+        }
+        return authenticationStatus;
+    }
+
+    private String getAccountBalanceResponseString(String email, String password, Activity activity) throws IOException {
         // Check network availability first.
         ConnectivityManager connMgr = (ConnectivityManager)
                 activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo == null || !networkInfo.isConnected()) {
-            return NOT_CONNECTED_TO_NETWORK;
+            return null;
         }
         InputStream is = null;
         OutputStreamWriter wr = null;
@@ -97,15 +110,10 @@ public class UserProfileManager {
             is = conn.getInputStream();
 
             // Convert the InputStream into a string
-            String contentAsString = readIt(is, len);
-            Log.d("Login", "The contentAsString is: " + contentAsString);
-            int authenticationStatus = getAuthenticationStatusFromResponseString(contentAsString);
-            if (authenticationStatus == AUTHENTICATION_SUCCESS) {
-                this.currentUserEmail = email;
-                this.password = password;
-                credentialStorage.saveValidCredentials(email, password);
-            }
-            return authenticationStatus;
+            String responseString = readIt(is, len);
+            Log.d("Login", "The contentAsString is: " + responseString);
+            return responseString;
+
         } finally {
             if (is != null) {
                 is.close();
@@ -114,6 +122,32 @@ public class UserProfileManager {
                 wr.close();
             }
         }
+    }
+
+    public int getRemainingMessagesCount(Activity activity) {
+        int remainingMessageCount = -1;
+        try {
+            String accountBalanceResponseString = getAccountBalanceResponseString(credentialStorage.getCurrentUsername(),
+                    credentialStorage.getCurrentUserPassword(), activity);
+            if (null == accountBalanceResponseString)
+            {
+                return -1;
+            }
+            Log.d(TAG, "accountBalanceResponseString = " + accountBalanceResponseString);
+            for (int i = 1; i < accountBalanceResponseString.length(); i++) {
+                String str = accountBalanceResponseString.substring(0, i);
+                Log.d(TAG, "str = " + str);
+                try {
+                    remainingMessageCount = Integer.parseInt(str);
+                } catch (NumberFormatException e) {
+                    Log.d(TAG, "NumberFormatException on str = " + str);
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "IOException on getRemainingMessagesCount", e);
+        }
+        return remainingMessageCount;
     }
 
     private int getAuthenticationStatusFromResponseString(String contentAsString) {
@@ -168,9 +202,9 @@ public class UserProfileManager {
         OutputStreamWriter wr = null;
         String formattedTargetMobileNumbers = getFormattedTargetMobileNumbers(targetMobileNumbers);
         String data = URLEncoder.encode("ID", "UTF-8")
-                + "=" + URLEncoder.encode(currentUserEmail, "UTF-8");
+                + "=" + URLEncoder.encode(credentialStorage.getCurrentUsername(), "UTF-8");
         data += "&" + URLEncoder.encode("Pwd", "UTF-8") + "="
-                + URLEncoder.encode(password, "UTF-8");
+                + URLEncoder.encode(credentialStorage.getCurrentUserPassword(), "UTF-8");
         data += "&" + URLEncoder.encode("PhNo", "UTF-8") + "="
                 + URLEncoder.encode(formattedTargetMobileNumbers, "UTF-8");
         data += "&" + URLEncoder.encode("Text", "UTF-8") + "="

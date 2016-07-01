@@ -66,6 +66,7 @@ class SimSmsSendingTask extends BaseSmsSendingTask {
     protected void onPostExecute(String result) {
         unregisterBroadcastReceivers();
         progressDialog.dismiss();
+        activity = null;
     }
 
 

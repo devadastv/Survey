@@ -17,7 +17,8 @@ import java.net.URLEncoder;
  */
 class OnlineSMSSendingTask extends BaseSmsSendingTask {
 
-    private static final boolean USE_ACTUAL_PROVIDER_FROM_PROFILE = false;
+    private static final boolean USE_ACTUAL_PROVIDER_FROM_PROFILE = true;
+    private static final String TAG = "SendSMS";
 
     public OnlineSMSSendingTask(String message, SendSMSActivity activity) {
         super(message, activity);
@@ -35,6 +36,7 @@ class OnlineSMSSendingTask extends BaseSmsSendingTask {
             for (int i = 0; i < numberOfHttpsPostsRequired; i++) {
                 String[] targetPhoneNumbers = getTargetPhoneNumbers(i);
                 try {
+                    Log.d(TAG, "inside doInBackground of OnlineSMSSendingTask. Calling UserProfileManager.getInstance().sendSMSviaOnlineGateway");
                     UserProfileManager.getInstance().sendSMSviaOnlineGateway(targetPhoneNumbers, message, activity);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -78,6 +80,7 @@ class OnlineSMSSendingTask extends BaseSmsSendingTask {
 
     protected void onPostExecute(String result) {
         progressDialog.dismiss();
+        activity = null;
     }
 
     private void sendSMSviaOnlineGateway(String mobileNumber) {
