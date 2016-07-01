@@ -51,7 +51,7 @@
     <string name="characters">Characters: </string>
     <string name="type_message">Type Message</string>
     <string name="clear_all">Clear All</string>
-    <string name="predefined_message">Predefined Message</string>
+    <string name="predefined_message">Preset Msg</string>
     <string name="select_customer_group">Select Customer Group</string>
     <string name="mobile_numbers">Mobile Numbers</string>
     <string name="messages_left">Messages Left: </string>
