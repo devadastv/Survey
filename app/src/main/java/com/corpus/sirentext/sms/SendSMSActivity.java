@@ -214,11 +214,28 @@ public class SendSMSActivity extends AppCompatActivity {
     }
 
     private void startSendMessages() {
+        boolean cancel = false;
+        View focusView = null;
+
         String text = mTagetNumbers.getText().toString();
         String[] numbers = text.split(",");
         trimNumbers(numbers);
         String message = mMessageText.getText().toString();
-        if (isAtLeastOneValidNumber(numbers)) {
+
+        if (!isAtLeastOneValidNumber(numbers))
+        {
+            mTagetNumbers.setError(getString(R.string.error_no_valid_numbers));
+            focusView = mTagetNumbers;
+            cancel = true;
+        } else if (TextUtils.isEmpty(message)) {
+            mMessageText.setError(getString(R.string.error_empty_message));
+            focusView = mMessageText;
+            cancel = true;
+        }
+
+        if (cancel) {
+            focusView.requestFocus(); // There was an error; don't proceed
+        } else {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             String smsGatewayPref = sharedPref.getString(SettingsActivity.KEY_PREF_SMS_GATEWAY, "");
             Log.d("SendSMS", "Current SMS gateway pref = " + smsGatewayPref);
@@ -232,8 +249,6 @@ public class SendSMSActivity extends AppCompatActivity {
                     updateRemainingMessagesCountInAsyncTask();
                 }
             }, 10000);
-        } else {
-            Toast.makeText(this, "At least one mobile number should be there to send SMS", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -56,6 +56,9 @@
     <string name="mobile_numbers">Mobile Numbers</string>
     <string name="messages_left">Messages Left: </string>
 
+    <string name="error_no_valid_numbers">There are no valid numbers</string>
+    <string name="error_empty_message">The message should not be empty</string>
+
     <!--SEND SMS MENU-->
     <string name="clear_all_contacts">Delete All Contacts</string>
     <string name="customer_list">Customer List</string>
