@@ -18,7 +18,7 @@ import java.util.Date;
  */
 public class SurveySQLiteHelper extends SQLiteOpenHelper {
 
-    private static final int database_VERSION = 4;
+    private static final int database_VERSION = 1;
     public static final String DATABASE_NAME = "SurveyDB";
     public static final String SURVEY_TABLE_NAME = "survey";
     public static final String SURVEY_COLUMN_ID = "_id";

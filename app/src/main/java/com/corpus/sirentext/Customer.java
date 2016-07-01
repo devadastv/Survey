@@ -69,9 +69,8 @@ public class Customer implements Serializable {
         return createdDate;
     }
 
-    public String getContactGroup() {
-        return "Family Group *"; //TODO: Store and get the value from DB
-//        return contactGroup;
+    public int getContactGroup() {
+        return contactGroup;
     }
 
     public String getPlace() {

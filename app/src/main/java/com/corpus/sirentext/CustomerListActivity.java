@@ -24,7 +24,9 @@ public class CustomerListActivity extends AppCompatActivity {
 
     SurveySQLiteHelper dbHelper = new SurveySQLiteHelper(this);
 
+    public static final String TAG = "CustomerList";
     public static final String SURVEY_ITEM_INDEX = "survey_item_index";
+
 
     // This is the Adapter being used to display the list's data
     private Cursor currentFilteredCursor;
@@ -47,16 +49,30 @@ public class CustomerListActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        Bundle extras = getIntent().getExtras();
+        int selectedCustomerGroup = -1;
+        if (extras != null) {
+            selectedCustomerGroup = extras.getInt(CustomerGroupListActiviy.SELECTED_CUSTOMER_GROUP);
+            Log.d(TAG, "selectedCustomerGroup from CustomerGroupListActiviy = " + selectedCustomerGroup);
+        }
+
         ListView mSurveyList = (ListView) findViewById(R.id.survey_list);
 
         // For the cursor adapter, specify which columns go into which views
         String[] fromColumns = {SurveySQLiteHelper.SURVEY_COLUMN_NAME, SurveySQLiteHelper.SURVEY_COLUMN_PHONE};
-        int[] toViews = {android.R.id.text1, android.R.id.text2}; // The TextView in simple_list_item_1
+        int[] toViews = {android.R.id.text1, android.R.id.text2};
+
+        if (selectedCustomerGroup != -1)
+        {
+            selection =  SurveySQLiteHelper.SURVEY_COLUMN_CONTACT_GROUP + "=" + selectedCustomerGroup;
+//            selectionArgs = new String[]{dbHelper.getCustomerGroup(selectedCustomerGroup)};
+        }
+        Log.d(TAG, "selection in CustomerList = " + selection);
         currentFilteredCursor =  dbHelper.getFilteredList(selection, selectionArgs, orderBy);
+        Log.d(TAG, "No of contacts in currentFilteredCursor obtained in CustomerList = " + currentFilteredCursor.getCount());
         mAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_2, currentFilteredCursor,
                 fromColumns, toViews, 0);
-
 
         mSurveyList.setAdapter(mAdapter);
         mSurveyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -130,7 +146,7 @@ public class CustomerListActivity extends AppCompatActivity {
 
     private String getFormattedTargetMobileNumbers() {
         Cursor filteredCursor = null;
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         try {
             filteredCursor = currentFilteredCursor;
             filteredCursor.moveToFirst();

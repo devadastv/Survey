@@ -155,7 +155,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
             mSurveyEntryCount.setText("Contact " + (sectionNumber + 1) + " of " + totalCount);
             mUserName.setText(customer.getUserName());
             mPhoneNumber.setText(customer.getPhoneNumber());
-            mContactsGroup.setText(customer.getContactGroup());
+            mContactsGroup.setText("" + customer.getContactGroup());
             mEmail.setText(customer.getEmail());
             mGender.setText(customer.getGenderText());
             mPlace.setText(customer.getPlace());

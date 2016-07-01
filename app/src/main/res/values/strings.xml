@@ -114,4 +114,5 @@
     <string name="customer_group_sample_1">Friends</string>
     <string name="customer_group_sample_2">Family</string>
     <string name="customer_group_sample_3">Colleagues</string>
+    <string name="title_activity_customer_group_list_activiy">Customer Groups</string>
 </resources>

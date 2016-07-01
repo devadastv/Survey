@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.corpus.sirentext.CustomerGroupListActiviy;
 import com.corpus.sirentext.CustomerListActivity;
 import com.corpus.sirentext.LoginActivity;
 import com.corpus.sirentext.NewCustomerActivity;
@@ -189,7 +190,7 @@ public class SendSMSActivity extends AppCompatActivity {
     }
 
     private void launchCustomerList() {
-        Intent intent = new Intent(this, CustomerListActivity.class);
+        Intent intent = new Intent(this, CustomerGroupListActiviy.class);
         startActivity(intent);
     }
 
