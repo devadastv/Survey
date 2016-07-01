@@ -17,7 +17,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.corpus.sirentext.db.SurveySQLiteHelper;
@@ -98,10 +97,12 @@ public class NewCustomerActivity extends AppCompatActivity {
         // Reset errors.
         mSurveyPersonName.setError(null);
         mMobileNumber.setError(null);
+        mCustomerGroup.setError(null);
 
         // Store values at the time of the login attempt.
         String surveyPersonName = mSurveyPersonName.getText().toString();
         String mobileNumber = mMobileNumber.getText().toString();
+        String customerGroup = mCustomerGroup.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -109,15 +110,39 @@ public class NewCustomerActivity extends AppCompatActivity {
                 + " , surveyPersonName.trim.length = " + surveyPersonName.trim().length() + " TextUtils.isEmpty(surveyPersonName.trim()) = " + TextUtils.isEmpty(surveyPersonName.trim()));
         // Check for a valid name, if the user entered one.
         if (TextUtils.isEmpty(surveyPersonName.trim())) {
-            mSurveyPersonName.setError("The name is empty");
+            mSurveyPersonName.setError("The name is mandatory");
             focusView = mSurveyPersonName;
             cancel = true;
         }
 
-        // Check for a valid mobile number.
-        if (!cancel && TextUtils.isEmpty(mobileNumber) && !isPhoneNumberValid(mobileNumber)) {
-            mMobileNumber.setError("Mobile number should contain at least 10 digits");
+        // Check for a non-empty mobile number.
+        if (!cancel && TextUtils.isEmpty(mobileNumber)) {
+            mMobileNumber.setError("Mobile number is mandatory");
             focusView = mMobileNumber;
+            cancel = true;
+        }
+
+        if (!cancel && !isPhoneNumberValidNumber(mobileNumber)) {
+            mMobileNumber.setError("Mobile number should be only digits");
+            focusView = mMobileNumber;
+            cancel = true;
+        }
+
+        if (!cancel && mobileNumber.length() < 10) {
+            mMobileNumber.setError("Mobile number should have 10 digits");
+            focusView = mMobileNumber;
+            cancel = true;
+        }
+
+        if (!cancel && mobileNumber.length() > 10) {
+            mMobileNumber.setError("Mobile number should have only 10 digits. Do not prefix country code or 0");
+            focusView = mMobileNumber;
+            cancel = true;
+        }
+
+        if (!cancel && TextUtils.isEmpty(customerGroup.trim())) {
+            mCustomerGroup.setError("Customer Group is mandatory");
+            focusView = mCustomerGroup;
             cancel = true;
         }
 
@@ -151,8 +176,13 @@ public class NewCustomerActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isPhoneNumberValid(String mobileNumber) {
-        return mobileNumber.length() > 10;
+    private boolean isPhoneNumberValidNumber(String mobileNumber) {
+        try {
+            Long.parseLong(mobileNumber);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
 //    public void onRadioButtonClicked(View view) {
